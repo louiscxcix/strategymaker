@@ -1,12 +1,8 @@
 import streamlit as st
 import pandas as pd
-from PIL import Image, ImageDraw, ImageFont
 import google.generativeai as genai
-import io
-import textwrap
 
 # --- 페이지 기본 설정 ---
-# 웹 페이지의 탭 제목, 아이콘, 레이아웃을 설정합니다.
 st.set_page_config(
     page_title="큰틀전략 메이커",
     page_icon="🧠",
@@ -15,54 +11,19 @@ st.set_page_config(
 )
 
 # --- Streamlit Secrets에서 API 키 가져오기 ---
-# Streamlit Cloud에 배포 시 st.secrets를 통해 안전하게 API 키를 관리합니다.
-# 로컬에서 테스트할 때는 이 부분이 작동하지 않을 수 있습니다.
 try:
-    # st.secrets는 Streamlit Cloud에 저장된 비밀 값에 접근하는 기능입니다.
     GEMINI_API_KEY = st.secrets["GEMINI_API_KEY"]
     genai.configure(api_key=GEMINI_API_KEY)
     api_key_configured = True
 except (KeyError, AttributeError):
-    # secrets에 키가 없으면 AI 관련 기능을 비활성화 상태로 둡니다.
     api_key_configured = False
 
 
 # --- 데이터 저장을 위한 세션 상태 초기화 ---
-# 앱이 재실행되어도 사용자가 입력한 데이터가 사라지지 않도록 세션 상태를 사용합니다.
 if 'my_strategies' not in st.session_state:
     st.session_state.my_strategies = pd.DataFrame(columns=['이름', '큰틀전략'])
 if 'ai_strategies' not in st.session_state:
     st.session_state.ai_strategies = []
-
-# --- 핵심 기능: 텍스트를 이미지로 변환하는 함수 ---
-def create_strategy_image(text, background_color=(255, 255, 240), font_color=(20, 20, 20), width=800, height=400):
-    """주어진 텍스트로 메모지 스타일의 이미지를 생성합니다."""
-    # 별도 폰트 파일 없이 Pillow의 기본 폰트나 시스템 폰트를 사용합니다.
-    # Streamlit Cloud 환경에 내장된 DejaVuSans 폰트를 우선적으로 사용하고, 없으면 기본값으로 대체합니다.
-    try:
-        font = ImageFont.truetype("DejaVuSans.ttf", 45)
-    except IOError:
-        font = ImageFont.load_default()
-
-    # 새 이미지를 생성합니다.
-    image = Image.new('RGB', (width, height), color=background_color)
-    draw = ImageDraw.Draw(image)
-
-    # 텍스트가 이미지 너비를 넘어가지 않도록 자동으로 줄 바꿈 처리를 합니다.
-    max_chars_per_line = 30 # 기본 폰트 기준 글자 수
-    wrapped_text = "\n".join(textwrap.wrap(text, width=max_chars_per_line, replace_whitespace=False))
-
-    # 텍스트를 이미지 중앙에 위치시키기 위한 계산을 합니다.
-    text_bbox = draw.multiline_textbbox((0, 0), wrapped_text, font=font, align="center")
-    text_width = text_bbox[2] - text_bbox[0]
-    text_height = text_bbox[3] - text_bbox[1]
-    position = ((width - text_width) / 2, (height - text_height) / 2)
-    draw.multiline_text(position, wrapped_text, font=font, fill=font_color, align='center')
-
-    # 생성된 이미지를 파일로 저장하지 않고, 메모리상에서 바로 처리하여 다운로드할 수 있게 반환합니다.
-    buf = io.BytesIO()
-    image.save(buf, format='PNG')
-    return buf.getvalue()
 
 # --- 사이드바 UI 구성 ---
 with st.sidebar:
@@ -71,11 +32,10 @@ with st.sidebar:
         st.success("AI 코치 기능이 활성화되었습니다!")
     else:
         st.warning("AI 코치 기능이 비활성화 상태입니다.")
-        st.info("앱을 배포한 후, Streamlit Cloud의 Settings > Secrets에 Gemini API 키를 추가해야 AI 기능이 작동합니다.")
+        st.info("앱 배포 후, Streamlit Cloud의 Secrets에 Gemini API 키를 추가해야 AI 기능이 작동합니다.")
 
     st.markdown("---")
     
-    # 메인 메뉴를 선택하는 라디오 버튼입니다.
     menu = st.radio(
         "메뉴를 선택하세요",
         ("✍️ 나의 큰틀전략", "🤖 AI 전략 코치", "🏆 명예의 전당"),
@@ -103,19 +63,20 @@ if menu == "✍️ 나의 큰틀전략":
     st.subheader("나의 큰틀전략 목록")
 
     if not st.session_state.my_strategies.empty:
-        for index, row in st.session_state.my_strategies.iterrows():
+        # 최신순으로 보여주기 위해 역순으로 반복
+        for index, row in reversed(list(st.session_state.my_strategies.iterrows())):
             with st.container(border=True):
-                st.markdown(f"**{row['이름']}**: {row['큰틀전략']}")
-                
-                image_bytes = create_strategy_image(f"{row['큰틀전략']}\n\n- {row['이름']} -")
-                # 파일 이름에 한국어가 들어가지 않도록 index를 사용합니다.
-                st.download_button(
-                    label="이미지로 저장",
-                    data=image_bytes,
-                    file_name=f"strategy_{index}.png",
-                    mime="image/png",
-                    key=f"download_{index}"
-                )
+                col1, col2 = st.columns([0.8, 0.2])
+                with col1:
+                    st.caption(f"작성자: {row['이름']}")
+                    st.write(f"**{row['큰틀전략']}**")
+                with col2:
+                    # 각 항목별로 고유한 키를 가진 삭제 버튼 생성
+                    if st.button("삭제", key=f"delete_{index}", use_container_width=True):
+                        # 데이터프레임에서 해당 인덱스의 행을 삭제
+                        st.session_state.my_strategies = st.session_state.my_strategies.drop(index)
+                        st.rerun() # 화면을 새로고침하여 목록을 즉시 업데이트
+
     else:
         st.info("아직 저장된 전략이 없습니다. 첫 번째 큰틀전략을 만들어보세요!")
 
@@ -135,7 +96,6 @@ elif menu == "🤖 AI 전략 코치":
                 with st.spinner('AI 코치가 당신만을 위한 전략을 구상 중입니다...'):
                     try:
                         model = genai.GenerativeModel('gemini-1.5-flash')
-                        # Gemini API에 더 명확하고 세세한 결과를 얻기 위해 프롬프트를 업데이트합니다.
                         prompt = f"""
                         You are a world-class performance psychologist who mentors Olympic athletes. Your specialty is creating a 'Big-Picture Strategy' (큰틀전략), which is a core mental framework to maintain throughout a competition.
 
@@ -144,28 +104,21 @@ elif menu == "🤖 AI 전략 코치":
                         2.  **Action-Oriented**: Focuses on controllable actions or attitudes.
                         3.  **Positive**: Frames the situation constructively.
 
-                        Examples of great 'Big-Picture Strategies' include: "상대를 괴롭히고, 과정을 즐기자" (Harass the opponent, enjoy the process), "성공 이미지를 그리며, 자신감 있게!" (Visualize success, act with confidence!), "배운다는 자세로, 통제 가능한 것에만 집중" (With a learner's mindset, focus only on what's controllable).
-
                         An athlete is currently facing the following situation (in Korean): '{user_prompt}'.
 
                         Based on their situation, create three distinct and detailed 'Big-Picture Strategies' for them in KOREAN.
                         For each strategy, provide:
                         -   **[전략]**: The core strategy phrase itself.
-                        -   **[해설]**: A brief, one-sentence explanation of why this mindset is effective for their specific problem.
+                        -   **[해설]**: A brief, one-sentence explanation of why this mindset is effective.
 
                         Format the output exactly like this for each of the three suggestions, with no extra text:
                         [전략]: (The strategy phrase in Korean)
                         [해설]: (The explanation in Korean)
                         ---
-                        [전략]: (The second strategy phrase in Korean)
-                        [해설]: (The second explanation in Korean)
-                        ---
-                        [전략]: (The third strategy phrase in Korean)
-                        [해설]: (The third explanation in Korean)
+                        (Repeat for the next two strategies)
                         """
                         response = model.generate_content(prompt)
                         
-                        # AI의 응답을 파싱하여 전략과 해설을 분리합니다.
                         st.session_state.ai_strategies = []
                         response_text = response.text
                         strategies_raw = response_text.split('---')
@@ -176,7 +129,7 @@ elif menu == "🤖 AI 전략 코치":
                                     explanation = block.split('[해설]:')[1].strip()
                                     st.session_state.ai_strategies.append({'strategy': strategy, 'explanation': explanation})
                                 except IndexError:
-                                    continue # 형식이 잘못된 블록은 건너뜁니다.
+                                    continue
 
                     except Exception as e:
                         st.error(f"AI 호출 중 오류가 발생했습니다: {e}")
@@ -189,14 +142,6 @@ elif menu == "🤖 AI 전략 코치":
             with st.container(border=True):
                 st.markdown(f"#### 💡 {item['strategy']}")
                 st.caption(f"{item['explanation']}")
-                image_bytes = create_strategy_image(item['strategy'])
-                st.download_button(
-                    label="이미지로 저장",
-                    data=image_bytes,
-                    file_name=f"ai_strategy_{i}.png",
-                    mime="image/png",
-                    key=f"ai_download_{i}"
-                )
 
 # 3. '명예의 전당' 메뉴 선택 시
 elif menu == "🏆 명예의 전당":
