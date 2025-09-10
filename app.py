@@ -108,10 +108,11 @@ if menu == "✍️ 나의 큰틀전략":
                 st.markdown(f"**{row['이름']}**: {row['큰틀전략']}")
                 
                 image_bytes = create_strategy_image(f"{row['큰틀전략']}\n\n- {row['이름']} -")
+                # 파일 이름에 한국어가 들어가지 않도록 index를 사용합니다.
                 st.download_button(
                     label="이미지로 저장",
                     data=image_bytes,
-                    file_name=f"strategy_{row['이름']}_{index}.png",
+                    file_name=f"strategy_{index}.png",
                     mime="image/png",
                     key=f"download_{index}"
                 )
@@ -134,16 +135,49 @@ elif menu == "🤖 AI 전략 코치":
                 with st.spinner('AI 코치가 당신만을 위한 전략을 구상 중입니다...'):
                     try:
                         model = genai.GenerativeModel('gemini-1.5-flash')
-                        # Gemini API에 더 명확한 결과를 얻기 위해 영문 프롬프트를 사용합니다.
+                        # Gemini API에 더 명확하고 세세한 결과를 얻기 위해 프롬프트를 업데이트합니다.
                         prompt = f"""
-                        You are a top-tier sports psychology mentor. A 'big-picture strategy' is a short, powerful, core mindset for an entire game.
-                        For example, 'Learn from this and just do my thing,' or 'Be bold, but stay cool.'
-                        A player is currently saying in Korean: '{user_prompt}'.
-                        Please suggest 3 'big-picture strategies' in KOREAN that would be encouraging for this player.
-                        Provide only the strategies in Korean, each separated by a newline, without any numbering or extra text.
+                        You are a world-class performance psychologist who mentors Olympic athletes. Your specialty is creating a 'Big-Picture Strategy' (큰틀전략), which is a core mental framework to maintain throughout a competition.
+
+                        A 'Big-Picture Strategy' should be:
+                        1.  **Concise and Powerful**: A short phrase that's easy to remember under pressure.
+                        2.  **Action-Oriented**: Focuses on controllable actions or attitudes.
+                        3.  **Positive**: Frames the situation constructively.
+
+                        Examples of great 'Big-Picture Strategies' include: "상대를 괴롭히고, 과정을 즐기자" (Harass the opponent, enjoy the process), "성공 이미지를 그리며, 자신감 있게!" (Visualize success, act with confidence!), "배운다는 자세로, 통제 가능한 것에만 집중" (With a learner's mindset, focus only on what's controllable).
+
+                        An athlete is currently facing the following situation (in Korean): '{user_prompt}'.
+
+                        Based on their situation, create three distinct and detailed 'Big-Picture Strategies' for them in KOREAN.
+                        For each strategy, provide:
+                        -   **[전략]**: The core strategy phrase itself.
+                        -   **[해설]**: A brief, one-sentence explanation of why this mindset is effective for their specific problem.
+
+                        Format the output exactly like this for each of the three suggestions, with no extra text:
+                        [전략]: (The strategy phrase in Korean)
+                        [해설]: (The explanation in Korean)
+                        ---
+                        [전략]: (The second strategy phrase in Korean)
+                        [해설]: (The second explanation in Korean)
+                        ---
+                        [전략]: (The third strategy phrase in Korean)
+                        [해설]: (The third explanation in Korean)
                         """
                         response = model.generate_content(prompt)
-                        st.session_state.ai_strategies = [s.strip() for s in response.text.split('\n') if s.strip()]
+                        
+                        # AI의 응답을 파싱하여 전략과 해설을 분리합니다.
+                        st.session_state.ai_strategies = []
+                        response_text = response.text
+                        strategies_raw = response_text.split('---')
+                        for block in strategies_raw:
+                            if '[전략]:' in block and '[해설]:' in block:
+                                try:
+                                    strategy = block.split('[전략]:')[1].split('[해설]:')[0].strip()
+                                    explanation = block.split('[해설]:')[1].strip()
+                                    st.session_state.ai_strategies.append({'strategy': strategy, 'explanation': explanation})
+                                except IndexError:
+                                    continue # 형식이 잘못된 블록은 건너뜁니다.
+
                     except Exception as e:
                         st.error(f"AI 호출 중 오류가 발생했습니다: {e}")
             else:
@@ -151,10 +185,11 @@ elif menu == "🤖 AI 전략 코치":
 
     if st.session_state.ai_strategies:
         st.subheader("AI 코치의 추천 큰틀전략")
-        for i, strategy in enumerate(st.session_state.ai_strategies):
+        for i, item in enumerate(st.session_state.ai_strategies):
             with st.container(border=True):
-                st.markdown(f"💡 {strategy}")
-                image_bytes = create_strategy_image(strategy)
+                st.markdown(f"#### 💡 {item['strategy']}")
+                st.caption(f"{item['explanation']}")
+                image_bytes = create_strategy_image(item['strategy'])
                 st.download_button(
                     label="이미지로 저장",
                     data=image_bytes,
