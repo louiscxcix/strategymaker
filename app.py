@@ -41,6 +41,12 @@ def apply_ui_styles():
                 font-family: 'Noto Sans KR', sans-serif;
             }
             
+            /* --- 다크모드 텍스트 색상 강제 수정 --- */
+            /* Streamlit 다크모드 테마의 기본 흰색 텍스트를 검은색으로 강제합니다. */
+            div[data-baseweb="base-web"] {
+                color: var(--black-color) !important;
+            }
+
             /* --- 기본 스타일 설정 --- */
             .stApp {
                 background-color: var(--bg-color) !important;
@@ -328,4 +334,3 @@ elif st.session_state.menu == "🏆 명예의 전당":
         """, unsafe_allow_html=True)
 
 st.markdown('</div>', unsafe_allow_html=True)
-
