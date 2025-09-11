@@ -53,6 +53,14 @@ def apply_ui_styles():
                 padding: 1.5rem 1rem 2rem 1rem !important;
             }
             
+            /* --- 헤더 정렬을 위한 컨테이너 --- */
+            .header-group {
+                display: flex;
+                align-items: center;
+                gap: 16px; /* 아이콘과 텍스트 사이 간격 */
+                margin-bottom: 8px;
+            }
+
             .icon-container {
                 width: 68px;
                 height: 68px;
@@ -61,7 +69,7 @@ def apply_ui_styles():
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                margin-bottom: 20px; /* --- 수정: auto 마진 제거 --- */
+                flex-shrink: 0;
             }
             .icon-container img {
                 width: 48px;
@@ -72,15 +80,14 @@ def apply_ui_styles():
                 font-size: 28px;
                 font-weight: 700;
                 color: var(--black-color);
-                text-align: left; /* --- 수정: 왼쪽 정렬 --- */
-                margin-bottom: 8px;
+                margin: 0;
             }
             .main-subtitle {
                 font-size: 16px;
                 color: var(--secondary-color);
                 text-align: left;
                 line-height: 1.6;
-                margin-bottom: 1.5rem; /* 여백 감소 */
+                margin-bottom: 1.5rem;
             }
             
             div[data-testid="stHorizontalBlock"] {
@@ -90,21 +97,15 @@ def apply_ui_styles():
                 padding: 4px !important;
                 overflow: hidden;
             }
-            div[data-testid="stHorizontalBlock"] > div {
-                padding: 0 !important;
-                margin: 0 !important;
-            }
-
+            
             div[data-testid="stHorizontalBlock"] .stButton button {
                 background-color: transparent;
                 color: var(--secondary-color);
                 border-radius: 10px;
-                width: 100%;
                 font-size: 14px;
                 font-weight: 500;
                 border: none;
                 padding: 0.8rem 0;
-                transition: background-color 0.2s, color 0.2s;
             }
             div[data-testid="stHorizontalBlock"] .stButton button[kind="primary"] {
                 background-color: var(--primary-color);
@@ -116,7 +117,7 @@ def apply_ui_styles():
                 background-color: white;
                 padding: 2rem;
                 border-radius: 16px;
-                margin-top: 1.5rem; /* 여백 감소 */
+                margin-top: 1.5rem;
             }
             
             h3 {
@@ -126,8 +127,9 @@ def apply_ui_styles():
                 margin-top: 2rem;
             }
             
+            /* --- 모든 주요 버튼 색상 통일 --- */
             .stForm .stButton>button,
-            .form-container .stButton>button { /* AI 버튼 선택자 수정 */
+            .form-container .stButton>button {
                 background-color: #2BA7D1;
                 color: white;
                 border-radius: 12px;
@@ -179,17 +181,16 @@ if 'ai_strategies' not in st.session_state:
 # --- UI 렌더링 시작 ---
 apply_ui_styles()
 
-# 아이콘 로드 및 표시
+# --- 헤더 UI (아이콘 + 제목 왼쪽 정렬) ---
 icon_path = Path(__file__).parent / "icon.png"
 icon_base64 = img_to_base_64(icon_path)
-if icon_base64:
-    st.markdown(f"""
-        <div class="icon-container">
-            <img src="data:image/png;base64,{icon_base64}" alt="App Icon">
-        </div>
-    """, unsafe_allow_html=True)
 
+st.markdown('<div class="header-group">', unsafe_allow_html=True)
+if icon_base64:
+    st.markdown(f'<div class="icon-container"><img src="data:image/png;base64,{icon_base64}" alt="App Icon"></div>', unsafe_allow_html=True)
 st.markdown('<p class="main-title">큰틀전략 메이커</p>', unsafe_allow_html=True)
+st.markdown('</div>', unsafe_allow_html=True)
+
 st.markdown('<p class="main-subtitle">나만의 다짐을 기록하고, AI에게 영감을 얻고,<br>레전드에게 배우는 멘탈 관리</p>', unsafe_allow_html=True)
 
 # --- 상단 메뉴 UI (콜백 방식) ---
