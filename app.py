@@ -103,6 +103,38 @@ def apply_ui_styles():
                 box-shadow: none !important;
             }
 
+            /* --- 입력창(텍스트/텍스트에어리어/셀렉트) 시각 분리 스타일 --- */
+            /* 다양한 Streamlit DOM 구조를 포괄하도록 여러 선택자 포함 */
+            .stTextInput>div>input,
+            div[data-testid="stTextInput"] input,
+            .stTextInput input,
+            .stTextArea>div>textarea,
+            div[data-testid="stTextArea"] textarea,
+            .stTextArea textarea,
+            div[data-testid="stSelectbox"] select,
+            .stSelectbox select {
+                background-color: #FFFFFF !important;
+                border: 1px solid var(--divider-color) !important;
+                border-radius: 12px !important;
+                padding: 10px 12px !important;
+                color: var(--black-color) !important;
+                box-shadow: none !important;
+            }
+
+            /* 플레이스홀더 색상 (입력 안내 텍스트) */
+            .stTextInput input::placeholder,
+            .stTextArea textarea::placeholder,
+            div[data-testid="stTextInput"] input::placeholder,
+            div[data-testid="stTextArea"] textarea::placeholder {
+                color: #9AA3AB !important;
+                opacity: 1 !important;
+            }
+
+            /* 텍스트에어리어 높이 기본 보정 - 필요시 개별 height로 덮어쓰기 가능 */
+            .stTextArea textarea {
+                min-height: 120px !important;
+            }
+
             .strategy-item {
                 background-color: white;
                 border: 1px solid var(--divider-color);
@@ -113,7 +145,7 @@ def apply_ui_styles():
         </style>
     """, unsafe_allow_html=True)
 
-# --- API 키 설정 ---
+# --- Streamlit Secrets에서 API 키 가져오기 ---
 try:
     GEMINI_API_KEY = st.secrets["GEMINI_API_KEY"]
     genai.configure(api_key=GEMINI_API_KEY)
@@ -132,13 +164,19 @@ if 'ai_strategies' not in st.session_state:
 # --- UI 렌더링 시작 ---
 apply_ui_styles()
 
-# --- 헤더 ---
+# --- 헤더 UI (아이콘 + 제목 왼쪽 정렬) ---
 icon_path = Path(__file__).parent / "icon.png"
 icon_base64 = img_to_base_64(icon_path)
-st.title("큰틀전략 메이커")
-st.caption("나만의 다짐을 기록하고, AI에게 영감을 얻고, 레전드에게 배우는 멘탈 관리")
 
-# --- 메뉴 버튼 ---
+st.markdown('<div class="header-group">', unsafe_allow_html=True)
+if icon_base64:
+    st.markdown(f'<div class="icon-container"><img src="data:image/png;base64,{icon_base64}" alt="App Icon"></div>', unsafe_allow_html=True)
+st.markdown('<p class="main-title">큰틀전략 메이커</p>', unsafe_allow_html=True)
+st.markdown('</div>', unsafe_allow_html=True)
+
+st.markdown('<p class="main-subtitle">나만의 다짐을 기록하고, AI에게 영감을 얻고,<br>레전드에게 배우는 멘탈 관리</p>', unsafe_allow_html=True)
+
+# --- 상단 메뉴 UI (콜백 방식) ---
 def set_menu(menu_selection):
     st.session_state.menu = menu_selection
 
@@ -149,19 +187,34 @@ for i, item in enumerate(menu_items):
     with cols[i]:
         is_active = (st.session_state.menu == item)
         button_type = "primary" if is_active else "secondary"
-        st.button(item, key=f"menu_{i}", use_container_width=True, type=button_type, on_click=set_menu, args=(item,))
+        
+        st.button(
+            item, 
+            key=f"button_{i}", 
+            use_container_width=True, 
+            type=button_type,
+            on_click=set_menu,
+            args=(item,)
+        )
 
-# --- 메인 화면 ---
+
+# --- 메인 화면 로직 ---
+st.markdown('<div class="content-area">', unsafe_allow_html=True)
+
+# 1. '나의 큰틀전략' 메뉴
 if st.session_state.menu == "✍️ 나의 큰틀전략":
+    st.markdown('<div class="form-container">', unsafe_allow_html=True)
     with st.form("my_strategy_form"):
         st.text_input("이름 (또는 이니셜)", key="user_name")
         st.text_area("나의 큰틀전략은...", height=100, key="user_strategy")
         submitted = st.form_submit_button("전략 저장하기", use_container_width=True)
+
         if submitted and st.session_state.user_name and st.session_state.user_strategy:
             new_data = pd.DataFrame({'이름': [st.session_state.user_name], '큰틀전략': [st.session_state.user_strategy]})
             st.session_state.my_strategies = pd.concat([st.session_state.my_strategies, new_data], ignore_index=True)
             st.success("새로운 큰틀전략이 저장되었습니다!")
-
+    st.markdown('</div>', unsafe_allow_html=True)
+    
     st.subheader("나의 큰틀전략 목록")
     if not st.session_state.my_strategies.empty:
         for index, row in reversed(list(st.session_state.my_strategies.iterrows())):
@@ -178,27 +231,31 @@ if st.session_state.menu == "✍️ 나의 큰틀전략":
     else:
         st.info("아직 저장된 전략이 없습니다.")
 
+
+# 2. 'AI 전략 코치' 메뉴
 elif st.session_state.menu == "🤖 AI 전략 코치":
+    st.markdown('<div class="form-container">', unsafe_allow_html=True)
     st.markdown("AI에게 당신의 상황을 이야기하고 **멘탈 코칭**을 받아보세요.")
     if not api_key_configured:
-        st.error("API 키가 설정되지 않았습니다.")
+        st.error("AI 코치 기능을 사용하기 위한 API 키가 설정되지 않았습니다.")
     else:
         user_prompt = st.text_area("어떤 상황인가요?", placeholder="예: 너무 긴장돼요, 자신감이 떨어졌어요", height=100)
         if st.button("AI에게 추천받기", use_container_width=True): 
             if user_prompt:
-                with st.spinner('AI 코치가 전략을 구상 중입니다...'):
+                with st.spinner('AI 코치가 당신만을 위한 전략을 구상 중입니다...'):
                     model = genai.GenerativeModel('gemini-1.5-flash')
                     prompt = f"""
                     You are a world-class performance psychologist. Your specialty is creating a 'Big-Picture Strategy' (큰틀전략).
                     An athlete is facing: '{user_prompt}'.
                     Create three distinct 'Big-Picture Strategies' for them in KOREAN.
                     For each, provide:
-                    - [전략]: 핵심 전략
-                    - [해설]: 짧은 설명
-                    Format:
-                    [전략]: ...
-                    [해설]: ...
+                    - **[전략]**: The core strategy phrase.
+                    - **[해설]**: A brief explanation.
+                    Format the output exactly like this:
+                    [전략]: (Strategy in Korean)
+                    [해설]: (Explanation in Korean)
                     ---
+                    (Repeat for next two)
                     """
                     response = model.generate_content(prompt)
                     st.session_state.ai_strategies = []
@@ -209,7 +266,8 @@ elif st.session_state.menu == "🤖 AI 전략 코치":
                             st.session_state.ai_strategies.append({'strategy': strategy, 'explanation': explanation})
             else:
                 st.warning("현재 상황을 입력해주세요.")
-
+    st.markdown('</div>', unsafe_allow_html=True)
+    
     if st.session_state.ai_strategies:
         st.subheader("AI 코치의 추천 큰틀전략")
         for item in st.session_state.ai_strategies:
@@ -218,6 +276,7 @@ elif st.session_state.menu == "🤖 AI 전략 코치":
             st.caption(item['explanation'])
             st.markdown('</div>', unsafe_allow_html=True)
 
+# 3. '명예의 전당' 메뉴
 elif st.session_state.menu == "🏆 명예의 전당":
     athletes_data = [
         {'선수': '김연아', '종목': '피겨 스케이팅', '전략': '무슨 일이 있더라도, 내가 할 수 있는 것에만 집중하고 최선을 다할 뿐이다.'},
@@ -227,7 +286,7 @@ elif st.session_state.menu == "🏆 명예의 전당":
         {'선수': "이상혁 '페이커'", '종목': 'e스포츠', '전략': '방심하지 않고, 이기든 지든 내 플레이를 하자.'},
     ]
     df_athletes = pd.DataFrame(athletes_data)
-
+    
     sports = ['모두 보기'] + sorted(df_athletes['종목'].unique())
     selected_sport = st.selectbox('종목별로 보기', sports, label_visibility="collapsed")
 
@@ -236,11 +295,12 @@ elif st.session_state.menu == "🏆 명예의 전당":
     else:
         filtered_df = df_athletes[df_athletes['종목'] == selected_sport]
 
-    for _, row in filtered_df.iterrows():
+    for index, row in filtered_df.iterrows():
         st.markdown(f"""
         <div class="strategy-item">
-            <p style="font-size: 14px; color: var(--primary-color); font-weight: 700;">{row['선수']} 
-            <span style="font-size: 12px; color: var(--secondary-color); font-weight: 400;">({row['종목']})</span></p>
+            <p style="font-size: 14px; color: var(--primary-color); font-weight: 700;">{row['선수']} <span style="font-size: 12px; color: var(--secondary-color); font-weight: 400;">({row['종목']})</span></p>
             <p style="font-size: 16px; color: var(--black-color); margin-top: 8px;">"{row['전략']}"</p>
         </div>
         """, unsafe_allow_html=True)
+        
+st.markdown('</div>', unsafe_allow_html=True)
