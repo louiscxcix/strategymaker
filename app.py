@@ -9,10 +9,7 @@ st.set_page_config(
     page_title="큰틀전략 메이커",
     page_icon="🧠",
     layout="centered",
-    initial_sidebar_state="collapsed",
-    # 다음 줄을 추가하여 앱 테마를 '라이트' 모드로 고정합니다.
-    # 이렇게 하면 사용자의 시스템 설정과 관계없이 항상 라이트 모드로 표시됩니다.
-    theme="light"
+    initial_sidebar_state="collapsed"
 )
 
 # --- 이미지 파일을 Base64로 인코딩하는 함수 ---
@@ -45,7 +42,6 @@ def apply_ui_styles():
             }
             
             /* --- 기본 스타일 설정 --- */
-            /* st.set_page_config(theme="light")로 인해 다크모드 CSS는 불필요해졌습니다. */
             .stApp {
                 background-color: var(--bg-color) !important;
             }
