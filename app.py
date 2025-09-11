@@ -89,35 +89,32 @@ def apply_ui_styles():
                 margin-bottom: 1.5rem;
             }
             
-            /* --- 메뉴 버튼 컨테이너 (수정) --- */
+            /* --- 메뉴 버튼 컨테이너 (흰 박스 제거) --- */
             div[data-testid="stHorizontalBlock"] {
-                border: 1px solid var(--divider-color);
-                background-color: white;
-                border-radius: 14px;
-                padding: 4px !important;
-                overflow: hidden;
-                margin-bottom: 1.5rem; /* 메뉴와 콘텐츠 사이 간격 */
+                background: none !important;
+                border: none !important;
+                padding: 0 !important;
+                margin-bottom: 1.5rem;
             }
             
-            /* --- 메뉴 버튼 스타일 (수정) --- */
+            /* --- 메뉴 버튼 스타일 --- */
             div[data-testid="stHorizontalBlock"] .stButton button {
-                background-color: white; /* 비활성 버튼 배경 흰색 */
-                color: var(--secondary-color);
+                background-color: #2BA7D1 !important;
+                color: white !important;
                 border-radius: 10px;
                 font-size: 14px;
-                font-weight: 500;
+                font-weight: 600;
                 border: none;
                 padding: 0.8rem 0;
             }
-            div[data-testid="stHorizontalBlock"] .stButton button[kind="primary"] {
-                background-color: var(--primary-color); /* 활성 버튼 배경 테마색 */
-                color: white;
-                font-weight: 700;
+            div[data-testid="stHorizontalBlock"] .stButton button:hover {
+                background-color: #2387A8 !important;
+                color: white !important;
             }
             
             /* --- 콘텐츠 영역 컨테이너 --- */
             .content-area {
-                margin-top: 0; /* 불필요한 공백 제거 */
+                margin-top: 0;
             }
 
             .form-container {
@@ -133,15 +130,19 @@ def apply_ui_styles():
                 margin-top: 2rem;
             }
             
-            /* --- 모든 주요 버튼 색상 통일 (수정된 부분) --- */
+            /* --- 모든 주요 버튼 색상 통일 --- */
             .form-container .stButton > button {
                 background-color: #2BA7D1 !important;
                 color: white !important;
                 border-radius: 12px !important;
                 padding: 14px 0 !important;
                 font-size: 16px !important;
-                font-weight: 500 !important;
+                font-weight: 600 !important;
                 border: none !important;
+            }
+            .form-container .stButton > button:hover {
+                background-color: #2387A8 !important;
+                color: white !important;
             }
             
             .stTextInput input, .stTextArea textarea {
@@ -326,4 +327,3 @@ elif st.session_state.menu == "🏆 명예의 전당":
         """, unsafe_allow_html=True)
 
 st.markdown('</div>', unsafe_allow_html=True)
-
