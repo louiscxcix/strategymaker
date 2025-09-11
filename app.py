@@ -37,32 +37,53 @@ def apply_ui_styles():
                 --icon-bg-color: rgba(43, 167, 209, 0.1);
             }
 
-            body {
-                font-family: 'Noto Sans KR', sans-serif;
+            /* ===========================
+               라이트 모드 강제 적용 (우선순위 높게)
+               =========================== */
+            html, body, .stApp, [data-testid="stAppViewContainer"], [data-testid="stSidebar"], .css-1d391kg {
+                background-color: var(--bg-color) !important;
+                color: var(--black-color) !important;
             }
-            
-            /* --- 다크모드 텍스트 색상 강제 수정 --- */
-            /* Streamlit 다크모드 테마의 기본 흰색 텍스트를 검은색으로 강제합니다. */
-            div[data-baseweb="base-web"] {
+            /* 사이드바가 있을 경우 대비 */
+            [data-testid="stSidebar"] {
+                background-color: #FFFFFF !important;
                 color: var(--black-color) !important;
             }
 
-            /* --- 기본 스타일 설정 --- */
-            .stApp {
-                background-color: var(--bg-color) !important;
+            /* 기본 폰트 */
+            body {
+                font-family: 'Noto Sans KR', sans-serif !important;
             }
-            
+
+            /* 헤더 / 푸터 숨김 */
             header[data-testid="stHeader"], footer {
                 display: none !important;
             }
+
             div.block-container {
                 padding: 1.5rem 1rem 2rem 1rem !important;
             }
-            
+
+            /* --- 불필요한 form 배경 박스 제거 --- */
+            .stForm, div[data-testid="stForm"] {
+                background: transparent !important;
+                border: none !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                box-shadow: none !important;
+            }
+            /* 내부 래퍼까지 추가로 덮어쓰기 (안 보이는 여백 제거용) */
+            div[data-testid="stForm"] > div, div[data-testid="stForm"] > div > div {
+                background: transparent !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                box-shadow: none !important;
+            }
+
             .header-group {
                 display: flex;
                 align-items: center;
-                gap: 24px;
+                gap: 16px;
                 margin-bottom: 8px;
             }
 
@@ -76,9 +97,11 @@ def apply_ui_styles():
                 justify-content: center;
                 flex-shrink: 0;
             }
+            /* 아이콘 이미지를 64px로 고정 */
             .icon-container img {
-                width: 56px;
-                height: 56px;
+                width: 64px;
+                height: 64px;
+                object-fit: contain;
             }
 
             .main-title {
@@ -96,16 +119,16 @@ def apply_ui_styles():
             }
             
             div[data-testid="stHorizontalBlock"] {
-                border: 1px solid var(--divider-color);
-                background-color: white;
+                border: 1px solid var(--divider-color) !important;
+                background-color: white !important;
                 border-radius: 14px;
-                padding: 4px !important;
+                padding: 6px !important;
                 overflow: hidden;
                 margin-bottom: 1.5rem; 
             }
-            
+
             div[data-testid="stHorizontalBlock"] .stButton button {
-                background-color: white;
+                background-color: white !important;
                 color: var(--secondary-color) !important;
                 border-radius: 10px;
                 font-size: 14px;
@@ -114,7 +137,7 @@ def apply_ui_styles():
                 padding: 0.8rem 0;
             }
             div[data-testid="stHorizontalBlock"] .stButton button[kind="primary"] {
-                background-color: var(--primary-color);
+                background-color: var(--primary-color) !important;
                 color: white !important;
                 font-weight: 700;
             }
@@ -124,52 +147,55 @@ def apply_ui_styles():
             }
 
             .form-container {
-                background-color: white;
-                padding: 2rem;
+                background-color: white !important;
+                padding: 1.75rem;
                 border-radius: 16px;
-            }
-            
-            /* --- 불필요한 stForm 배경 박스 제거 (사용자 힌트 적용) --- */
-            div[data-testid="stForm"] {
-                background: transparent !important;
-                border: none !important;
-                padding: 0 !important;
-                margin: 0 !important;
                 box-shadow: none !important;
-            }
-            div[data-testid="stForm"] > div[data-testid="stVerticalBlock"] {
-                background: transparent !important;
             }
             
             .form-container .stButton > button {
-                background-color: #2BA7D1 !important;
+                background-color: var(--primary-color) !important;
                 color: white !important;
                 border-radius: 12px !important;
-                padding: 14px 0 !important;
+                padding: 12px 0 !important;
                 font-size: 16px !important;
-                font-weight: 500 !important;
+                font-weight: 600 !important;
                 border: none !important;
             }
-            
-            .stTextInput input, .stTextArea textarea {
+
+            /* 입력창을 라이트한 흰 배경으로 고정 (구버전/신버전 CSS 커버) */
+            .stTextInput input, .stTextArea textarea, input[type="text"], textarea, .stTextInput > div > input, .stTextArea > div > textarea {
                 background-color: #FFFFFF !important;
                 border: 1px solid var(--divider-color) !important;
                 border-radius: 12px !important;
                 color: var(--black-color) !important;
+                padding: 10px 12px !important;
             }
-            
+            /* placeholder 색상 (선택) */
+            .stTextInput input::placeholder, .stTextArea textarea::placeholder {
+                color: var(--secondary-color) !important;
+                opacity: 0.9;
+            }
+
             .strategy-item {
-                background-color: white;
-                border: 1px solid var(--divider-color);
+                background-color: white !important;
+                border: 1px solid var(--divider-color) !important;
                 border-radius: 12px;
                 padding: 1rem 1.2rem;
                 margin-bottom: 1rem;
+                color: var(--black-color) !important;
             }
             .strategy-item .stButton button {
                 background-color: #FEE2E2 !important;
                 color: #EF4444 !important;
                 font-size: 12px;
                 border-radius: 8px;
+            }
+
+            /* 작은 디바이스/반응형을 위한 여유 */
+            @media (max-width: 640px) {
+                .header-group { gap: 12px; }
+                .main-title { font-size: 22px; }
             }
         </style>
     """, unsafe_allow_html=True)
@@ -181,7 +207,6 @@ try:
     api_key_configured = True
 except (KeyError, AttributeError):
     api_key_configured = False
-
 
 # --- 데이터 및 상태 초기화 ---
 if 'menu' not in st.session_state:
@@ -195,7 +220,12 @@ if 'ai_strategies' not in st.session_state:
 apply_ui_styles()
 
 # --- 헤더 UI (아이콘 + 제목 왼쪽 정렬) ---
-icon_path = Path(__file__).parent / "icon.png"
+# icon.png 파일은 같은 폴더에 둬야 합니다.
+try:
+    icon_path = Path(__file__).parent / "icon.png"
+except NameError:
+    # 로컬 개발 환경에서 __file__이 없을 경우 대비 (streamlit run 할 때는 __file__ 존재)
+    icon_path = Path("icon.png")
 icon_base_64 = img_to_base_64(icon_path)
 
 st.markdown('<div class="header-group">', unsafe_allow_html=True)
@@ -216,17 +246,27 @@ menu_items = ["✍️ 나의 큰틀전략", "🤖 AI 전략 코치", "🏆 명�
 for i, item in enumerate(menu_items):
     with cols[i]:
         is_active = (st.session_state.menu == item)
-        button_type = "primary" if is_active else "secondary"
-        
-        st.button(
-            item, 
-            key=f"button_{i}", 
-            use_container_width=True, 
-            type=button_type,
-            on_click=set_menu,
-            args=(item,)
-        )
-
+        # Streamlit의 button 파라미터가 버전에 따라 달라질 수 있음. 기존 코드를 유지하되,
+        # 'type' 인자를 사용하지 않는 환경이라면 기본 버튼으로 작동합니다.
+        try:
+            button_type = "primary" if is_active else "secondary"
+            st.button(
+                item,
+                key=f"button_{i}",
+                use_container_width=True,
+                type=button_type,
+                on_click=set_menu,
+                args=(item,)
+            )
+        except TypeError:
+            # fallback — 'type' 인자가 없는 버전용
+            st.button(
+                item,
+                key=f"button_{i}",
+                use_container_width=True,
+                on_click=set_menu,
+                args=(item,)
+            )
 
 # --- 메인 화면 로직 ---
 st.markdown('<div class="content-area">', unsafe_allow_html=True)
@@ -235,11 +275,12 @@ st.markdown('<div class="content-area">', unsafe_allow_html=True)
 if st.session_state.menu == "✍️ 나의 큰틀전략":
     st.markdown('<div class="form-container">', unsafe_allow_html=True)
     with st.form("my_strategy_form"):
+        # (불필요한 흰 박스는 apply_ui_styles()에 포함된 .stForm, div[data-testid="stForm"]로 제거됩니다)
         st.text_input("이름 (또는 이니셜)", key="user_name")
         st.text_area("나의 큰틀전략은...", height=100, key="user_strategy")
         submitted = st.form_submit_button("전략 저장하기", use_container_width=True)
 
-        if submitted and st.session_state.user_name and st.session_state.user_strategy:
+        if submitted and st.session_state.get("user_name") and st.session_state.get("user_strategy"):
             new_data = pd.DataFrame({'이름': [st.session_state.user_name], '큰틀전략': [st.session_state.user_strategy]})
             st.session_state.my_strategies = pd.concat([st.session_state.my_strategies, new_data], ignore_index=True)
             st.success("새로운 큰틀전략이 저장되었습니다!")
@@ -256,11 +297,10 @@ if st.session_state.menu == "✍️ 나의 큰틀전략":
             with col2:
                 if st.button("삭제", key=f"delete_{index}", use_container_width=True):
                     st.session_state.my_strategies = st.session_state.my_strategies.drop(index)
-                    st.rerun()
+                    st.experimental_rerun()
             st.markdown('</div>', unsafe_allow_html=True)
     else:
         st.info("아직 저장된 전략이 없습니다.")
-
 
 # 2. 'AI 전략 코치' 메뉴
 elif st.session_state.menu == "🤖 AI 전략 코치":
