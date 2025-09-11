@@ -89,29 +89,42 @@ def apply_ui_styles():
                 margin-bottom: 1.5rem;
             }
             
-            /* --- 메뉴 버튼 컨테이너 (흰 박스 제거) --- */
+            /* --- 상단 메뉴 버튼 컨테이너 --- */
             div[data-testid="stHorizontalBlock"] {
-                background: none !important;
+                background-color: transparent !important;
                 border: none !important;
                 padding: 0 !important;
-                margin-bottom: 1.5rem;
+                margin-bottom: 1.5rem !important;
             }
             
-            /* --- 메뉴 버튼 스타일 --- */
-            div[data-testid="stHorizontalBlock"] .stButton button {
+            /* --- 메뉴 버튼 기본 --- */
+            div[data-testid="stHorizontalBlock"] .stButton > button {
+                background-color: #FFFFFF !important;
+                color: var(--secondary-color) !important;
+                border-radius: 10px !important;
+                font-size: 14px !important;
+                font-weight: 500 !important;
+                border: 1px solid var(--divider-color) !important;
+                box-shadow: none !important;
+                transition: none !important;
+            }
+            
+            /* --- 현재 선택된 메뉴 --- */
+            div[data-testid="stHorizontalBlock"] .stButton > button[kind="primary"] {
                 background-color: #2BA7D1 !important;
-                color: white !important;
-                border-radius: 10px;
-                font-size: 14px;
-                font-weight: 600;
-                border: none;
-                padding: 0.8rem 0;
+                color: #FFFFFF !important;
+                font-weight: 700 !important;
+                border: none !important;
             }
-            div[data-testid="stHorizontalBlock"] .stButton button:hover {
-                background-color: #2387A8 !important;
-                color: white !important;
+
+            /* --- 불필요한 st.form 흰색 박스 제거 --- */
+            .stForm {
+                background-color: transparent !important;
+                border: none !important;
+                padding: 0 !important;
+                box-shadow: none !important;
             }
-            
+
             /* --- 콘텐츠 영역 컨테이너 --- */
             .content-area {
                 margin-top: 0;
@@ -131,18 +144,20 @@ def apply_ui_styles():
             }
             
             /* --- 모든 주요 버튼 색상 통일 --- */
-            .form-container .stButton > button {
+            .stButton > button {
                 background-color: #2BA7D1 !important;
-                color: white !important;
+                color: #FFFFFF !important;
                 border-radius: 12px !important;
                 padding: 14px 0 !important;
                 font-size: 16px !important;
                 font-weight: 600 !important;
                 border: none !important;
+                box-shadow: none !important;
+                transition: background-color 0.2s ease;
             }
-            .form-container .stButton > button:hover {
+
+            .stButton > button:hover {
                 background-color: #2387A8 !important;
-                color: white !important;
             }
             
             .stTextInput input, .stTextArea textarea {
