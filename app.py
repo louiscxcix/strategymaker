@@ -96,6 +96,7 @@ def apply_ui_styles():
                 border-radius: 14px;
                 padding: 4px !important;
                 overflow: hidden;
+                margin-bottom: 1.5rem; /* 메뉴와 콘텐츠 사이 간격 추가 */
             }
             
             div[data-testid="stHorizontalBlock"] .stButton button {
@@ -117,7 +118,6 @@ def apply_ui_styles():
                 background-color: white;
                 padding: 2rem;
                 border-radius: 16px;
-                margin-top: 0.5rem; /* 여백을 1/3로 축소 */
             }
             
             h3 {
@@ -219,7 +219,6 @@ for i, item in enumerate(menu_items):
 
 # 1. '나의 큰틀전략' 메뉴
 if st.session_state.menu == "✍️ 나의 큰틀전략":
-    # <<<<<<< 수정된 부분: 불필요한 st.container() 제거 >>>>>>>
     st.markdown('<div class="form-container">', unsafe_allow_html=True)
     with st.form("my_strategy_form"):
         st.text_input("이름 (또는 이니셜)", key="user_name")
@@ -319,5 +318,6 @@ elif st.session_state.menu == "🏆 명예의 전당":
             <p style="font-size: 16px; color: var(--black-color); margin-top: 8px;">"{row['전략']}"</p>
         </div>
         """, unsafe_allow_html=True)
+
 
 
