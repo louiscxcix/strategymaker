@@ -43,15 +43,14 @@ def apply_ui_styles():
 
             /* --- 다크모드 방지 및 기본 스타일 설정 --- */
             .stApp {
-                background-color: var(--bg-color);
+                background-color: var(--bg-color) !important;
             }
             
-            /* 모든 텍스트 색상을 강제로 지정 */
-            body, [data-baseweb="body"], .stApp, .stApp div, .stApp p, .stApp li, .stApp label, .stMarkdown {
-                color: var(--black-color) !important;
-            }
-
-            h1, h2, h3, h4, h5, h6 {
+            /* 모든 텍스트 요소 색상을 강제로 지정 */
+            body, [data-baseweb="body"], .stApp, .stApp div, .stApp p, .stApp li, .stApp label, .stMarkdown,
+            h1, h2, h3, h4, h5, h6,
+            div[data-testid="stWidgetLabel"] > label,
+            div[data-testid="stMarkdownContainer"] p {
                 color: var(--black-color) !important;
             }
             
@@ -109,7 +108,7 @@ def apply_ui_styles():
             
             div[data-testid="stHorizontalBlock"] .stButton button {
                 background-color: white;
-                color: var(--secondary-color);
+                color: var(--secondary-color) !important;
                 border-radius: 10px;
                 font-size: 14px;
                 font-weight: 500;
@@ -118,7 +117,7 @@ def apply_ui_styles():
             }
             div[data-testid="stHorizontalBlock"] .stButton button[kind="primary"] {
                 background-color: var(--primary-color);
-                color: white;
+                color: white !important;
                 font-weight: 700;
             }
             
@@ -137,6 +136,9 @@ def apply_ui_styles():
                 background: transparent !important;
                 border: none !important;
                 padding: 0 !important;
+            }
+            div[data-testid="stForm"] > div[data-testid="stVerticalBlock"] {
+                background: transparent !important;
             }
             
             .form-container .stButton > button {
@@ -170,7 +172,6 @@ def apply_ui_styles():
                 border-radius: 8px;
             }
 
-            div[data-testid="stWidgetLabel"] > label,
             div[data-testid="stCaption"],
             div[data-testid="stInfo"],
             div[data-testid="stSuccess"] > div,
