@@ -257,7 +257,7 @@ elif st.session_state.menu == "🤖 AI 전략 코치":
         st.error("AI 코치 기능을 사용하기 위한 API 키가 설정되지 않았습니다.")
     else:
         user_prompt = st.text_area("어떤 상황인가요?", placeholder="예: 너무 긴장돼요, 자신감이 떨어졌어요", height=100)
-        if st.button("AI에게 추천받기", use_container_width=True, type="primary"):
+        if st.button("AI에게 추천받기", use_container_width=True): # <<<<<<< 이 부분 수정: type="primary" 제거
             if user_prompt:
                 with st.spinner('AI 코치가 당신만을 위한 전략을 구상 중입니다...'):
                     model = genai.GenerativeModel('gemini-1.5-flash')
@@ -319,4 +319,3 @@ elif st.session_state.menu == "🏆 명예의 전당":
             <p style="font-size: 16px; color: var(--black-color); margin-top: 8px;">"{row['전략']}"</p>
         </div>
         """, unsafe_allow_html=True)
-
