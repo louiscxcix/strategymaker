@@ -65,7 +65,7 @@ def apply_ui_styles():
             .header-group {
                 display: flex;
                 align-items: center;
-                gap: 24px; /* 아이콘과 텍스트 사이 간격 증가 */
+                gap: 24px;
                 margin-bottom: 8px;
             }
 
@@ -132,6 +132,13 @@ def apply_ui_styles():
                 border-radius: 16px;
             }
             
+            /* --- 불필요한 stForm 배경 박스 제거 (사용자 힌트 적용) --- */
+            div[data-testid="stForm"] {
+                background: transparent !important;
+                border: none !important;
+                padding: 0 !important;
+            }
+            
             .form-container .stButton > button {
                 background-color: #2BA7D1 !important;
                 color: white !important;
@@ -163,7 +170,6 @@ def apply_ui_styles():
                 border-radius: 8px;
             }
 
-            /* --- Streamlit 위젯 텍스트 색상 재정의 --- */
             div[data-testid="stWidgetLabel"] > label,
             div[data-testid="stCaption"],
             div[data-testid="stInfo"],
