@@ -67,8 +67,8 @@ def apply_ui_styles():
                 flex-shrink: 0;
             }
             .icon-container img {
-                width: 64px !important;
-                height: 64px !important;
+                width: 128px !important;
+                height: 128px !important;
                 object-fit: contain !important;
             }
 
