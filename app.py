@@ -9,7 +9,10 @@ st.set_page_config(
     page_title="큰틀전략 메이커",
     page_icon="🧠",
     layout="centered",
-    initial_sidebar_state="collapsed"
+    initial_sidebar_state="collapsed",
+    # 다음 줄을 추가하여 앱 테마를 '라이트' 모드로 고정합니다.
+    # 이렇게 하면 사용자의 시스템 설정과 관계없이 항상 라이트 모드로 표시됩니다.
+    theme="light"
 )
 
 # --- 이미지 파일을 Base64로 인코딩하는 함수 ---
@@ -40,18 +43,11 @@ def apply_ui_styles():
             body {
                 font-family: 'Noto Sans KR', sans-serif;
             }
-
-            /* --- 다크모드 방지 및 기본 스타일 설정 --- */
+            
+            /* --- 기본 스타일 설정 --- */
+            /* st.set_page_config(theme="light")로 인해 다크모드 CSS는 불필요해졌습니다. */
             .stApp {
                 background-color: var(--bg-color) !important;
-            }
-            
-            /* 모든 텍스트 요소 색상을 강제로 지정 */
-            body, [data-baseweb="body"], .stApp, .stApp div, .stApp p, .stApp li, .stApp label, .stMarkdown,
-            h1, h2, h3, h4, h5, h6,
-            div[data-testid="stWidgetLabel"] > label,
-            div[data-testid="stMarkdownContainer"] p {
-                color: var(--black-color) !important;
             }
             
             header[data-testid="stHeader"], footer {
@@ -136,6 +132,8 @@ def apply_ui_styles():
                 background: transparent !important;
                 border: none !important;
                 padding: 0 !important;
+                margin: 0 !important;
+                box-shadow: none !important;
             }
             div[data-testid="stForm"] > div[data-testid="stVerticalBlock"] {
                 background: transparent !important;
@@ -170,14 +168,6 @@ def apply_ui_styles():
                 color: #EF4444 !important;
                 font-size: 12px;
                 border-radius: 8px;
-            }
-
-            div[data-testid="stCaption"],
-            div[data-testid="stInfo"],
-            div[data-testid="stSuccess"] > div,
-            div[data-testid="stWarning"] > div,
-            div[data-testid="stError"] > div {
-                color: var(--black-color) !important;
             }
         </style>
     """, unsafe_allow_html=True)
