@@ -32,7 +32,6 @@ def apply_ui_styles():
                 --primary-color: #2BA7D1;
                 --black-color: #0D1628;
                 --secondary-color: #86929A;
-                --gray-color: #898D99;
                 --divider-color: #E5E7EB;
                 --bg-color: #F0F2F5;
                 --icon-bg-color: rgba(43, 167, 209, 0.1);
@@ -47,9 +46,9 @@ def apply_ui_styles():
                 background-color: var(--bg-color);
             }
             
-            /* Streamlit의 기본 텍스트 색상을 검정으로 강제 */
-            [data-baseweb="body"] {
-                color: var(--black-color);
+            /* 모든 텍스트 색상을 강제로 지정 */
+            body, [data-baseweb="body"], .stApp, .stApp div, .stApp p, .stApp li, .stApp label, .stMarkdown {
+                color: var(--black-color) !important;
             }
 
             h1, h2, h3, h4, h5, h6 {
@@ -66,13 +65,13 @@ def apply_ui_styles():
             .header-group {
                 display: flex;
                 align-items: center;
-                gap: 16px;
+                gap: 24px; /* 아이콘과 텍스트 사이 간격 증가 */
                 margin-bottom: 8px;
             }
 
             .icon-container {
-                width: 80px; /* 아이콘 컨테이너 크기 증가 */
-                height: 80px; /* 아이콘 컨테이너 크기 증가 */
+                width: 80px;
+                height: 80px;
                 background-color: var(--icon-bg-color);
                 border-radius: 50%;
                 display: flex;
@@ -81,19 +80,19 @@ def apply_ui_styles():
                 flex-shrink: 0;
             }
             .icon-container img {
-                width: 56px; /* 아이콘 이미지 크기 증가 */
-                height: 56px; /* 아이콘 이미지 크기 증가 */
+                width: 56px;
+                height: 56px;
             }
 
             .main-title {
                 font-size: 28px;
                 font-weight: 700;
-                color: var(--black-color);
+                color: var(--black-color) !important;
                 margin: 0;
             }
             .main-subtitle {
                 font-size: 16px;
-                color: var(--secondary-color);
+                color: var(--secondary-color) !important;
                 text-align: left;
                 line-height: 1.6;
                 margin-bottom: 1.5rem;
@@ -165,9 +164,13 @@ def apply_ui_styles():
             }
 
             /* --- Streamlit 위젯 텍스트 색상 재정의 --- */
+            div[data-testid="stWidgetLabel"] > label,
             div[data-testid="stCaption"],
-            div[data-testid="stInfo"] {
-                color: var(--secondary-color) !important;
+            div[data-testid="stInfo"],
+            div[data-testid="stSuccess"] > div,
+            div[data-testid="stWarning"] > div,
+            div[data-testid="stError"] > div {
+                color: var(--black-color) !important;
             }
         </style>
     """, unsafe_allow_html=True)
