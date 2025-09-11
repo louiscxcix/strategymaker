@@ -61,7 +61,7 @@ def apply_ui_styles():
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                margin: 0 auto 20px auto;
+                margin-bottom: 20px; /* --- 수정: auto 마진 제거 --- */
             }
             .icon-container img {
                 width: 48px;
@@ -72,7 +72,7 @@ def apply_ui_styles():
                 font-size: 28px;
                 font-weight: 700;
                 color: var(--black-color);
-                text-align: center;
+                text-align: left; /* --- 수정: 왼쪽 정렬 --- */
                 margin-bottom: 8px;
             }
             .main-subtitle {
@@ -80,7 +80,7 @@ def apply_ui_styles():
                 color: var(--secondary-color);
                 text-align: left;
                 line-height: 1.6;
-                margin-bottom: 2.5rem;
+                margin-bottom: 1.5rem; /* 여백 감소 */
             }
             
             div[data-testid="stHorizontalBlock"] {
@@ -116,7 +116,7 @@ def apply_ui_styles():
                 background-color: white;
                 padding: 2rem;
                 border-radius: 16px;
-                margin-top: 2rem;
+                margin-top: 1.5rem; /* 여백 감소 */
             }
             
             h3 {
@@ -127,8 +127,8 @@ def apply_ui_styles():
             }
             
             .stForm .stButton>button,
-            .form-container .stButton>button[kind="primary"] {
-                background-color: var(--primary-color);
+            .form-container .stButton>button { /* AI 버튼 선택자 수정 */
+                background-color: #2BA7D1;
                 color: white;
                 border-radius: 12px;
                 padding: 14px 0;
@@ -137,7 +137,6 @@ def apply_ui_styles():
                 border: none;
             }
             
-            /* --- 수정된 부분: 텍스트 입력창 스타일 --- */
             .stTextInput input, .stTextArea textarea {
                 background-color: #FFFFFF !important;
                 border: 1px solid var(--divider-color) !important;
