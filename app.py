@@ -117,7 +117,7 @@ def apply_ui_styles():
                 background-color: white;
                 padding: 2rem;
                 border-radius: 16px;
-                margin-top: 1.5rem;
+                margin-top: 0.5rem; /* 여백을 1/3로 축소 */
             }
             
             h3 {
