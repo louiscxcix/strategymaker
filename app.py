@@ -53,11 +53,10 @@ def apply_ui_styles():
                 padding: 1.5rem 1rem 2rem 1rem !important;
             }
             
-            /* --- 헤더 정렬을 위한 컨테이너 --- */
             .header-group {
                 display: flex;
                 align-items: center;
-                gap: 16px; /* 아이콘과 텍스트 사이 간격 */
+                gap: 16px;
                 margin-bottom: 8px;
             }
 
@@ -90,13 +89,13 @@ def apply_ui_styles():
                 margin-bottom: 1.5rem;
             }
             
+            /* --- 메뉴 버튼 컨테이너 --- */
             div[data-testid="stHorizontalBlock"] {
                 border: 1px solid var(--divider-color);
                 background-color: white;
                 border-radius: 14px;
                 padding: 4px !important;
                 overflow: hidden;
-                margin-bottom: 1.5rem; /* 메뉴와 콘텐츠 사이 간격 추가 */
             }
             
             div[data-testid="stHorizontalBlock"] .stButton button {
@@ -114,6 +113,11 @@ def apply_ui_styles():
                 font-weight: 700;
             }
             
+            /* --- 콘텐츠 영역 컨테이너 --- */
+            .content-area {
+                margin-top: 1.5rem;
+            }
+
             .form-container {
                 background-color: white;
                 padding: 2rem;
@@ -128,15 +132,15 @@ def apply_ui_styles():
             }
             
             /* --- 모든 주요 버튼 색상 통일 (수정된 부분) --- */
-            .stForm .stButton>button,
-            .form-container .stButton>button {
+            div[data-testid="stForm"] button[kind="secondary"],
+            div[data-testid="stVerticalBlock"] .stButton button {
                 background-color: #2BA7D1 !important;
                 color: white !important;
                 border-radius: 12px;
                 padding: 14px 0;
                 font-size: 16px;
                 font-weight: 500;
-                border: none;
+                border: none !important;
             }
             
             .stTextInput input, .stTextArea textarea {
@@ -153,8 +157,8 @@ def apply_ui_styles():
                 margin-bottom: 1rem;
             }
             .strategy-item .stButton button {
-                background-color: #FEE2E2;
-                color: #EF4444;
+                background-color: #FEE2E2 !important;
+                color: #EF4444 !important;
                 font-size: 12px;
                 border-radius: 8px;
             }
@@ -216,6 +220,7 @@ for i, item in enumerate(menu_items):
 
 
 # --- 메인 화면 로직 ---
+st.markdown('<div class="content-area">', unsafe_allow_html=True)
 
 # 1. '나의 큰틀전략' 메뉴
 if st.session_state.menu == "✍️ 나의 큰틀전략":
@@ -319,5 +324,5 @@ elif st.session_state.menu == "🏆 명예의 전당":
         </div>
         """, unsafe_allow_html=True)
 
-
+st.markdown('</div>', unsafe_allow_html=True)
 
