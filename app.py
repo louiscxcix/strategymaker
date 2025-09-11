@@ -219,18 +219,18 @@ for i, item in enumerate(menu_items):
 
 # 1. '나의 큰틀전략' 메뉴
 if st.session_state.menu == "✍️ 나의 큰틀전략":
-    with st.container():
-        st.markdown('<div class="form-container">', unsafe_allow_html=True)
-        with st.form("my_strategy_form"):
-            st.text_input("이름 (또는 이니셜)", key="user_name")
-            st.text_area("나의 큰틀전략은...", height=100, key="user_strategy")
-            submitted = st.form_submit_button("전략 저장하기", use_container_width=True)
+    # <<<<<<< 수정된 부분: 불필요한 st.container() 제거 >>>>>>>
+    st.markdown('<div class="form-container">', unsafe_allow_html=True)
+    with st.form("my_strategy_form"):
+        st.text_input("이름 (또는 이니셜)", key="user_name")
+        st.text_area("나의 큰틀전략은...", height=100, key="user_strategy")
+        submitted = st.form_submit_button("전략 저장하기", use_container_width=True)
 
-            if submitted and st.session_state.user_name and st.session_state.user_strategy:
-                new_data = pd.DataFrame({'이름': [st.session_state.user_name], '큰틀전략': [st.session_state.user_strategy]})
-                st.session_state.my_strategies = pd.concat([st.session_state.my_strategies, new_data], ignore_index=True)
-                st.success("새로운 큰틀전략이 저장되었습니다!")
-        st.markdown('</div>', unsafe_allow_html=True)
+        if submitted and st.session_state.user_name and st.session_state.user_strategy:
+            new_data = pd.DataFrame({'이름': [st.session_state.user_name], '큰틀전략': [st.session_state.user_strategy]})
+            st.session_state.my_strategies = pd.concat([st.session_state.my_strategies, new_data], ignore_index=True)
+            st.success("새로운 큰틀전략이 저장되었습니다!")
+    st.markdown('</div>', unsafe_allow_html=True)
     
     st.subheader("나의 큰틀전략 목록")
     if not st.session_state.my_strategies.empty:
@@ -257,7 +257,7 @@ elif st.session_state.menu == "🤖 AI 전략 코치":
         st.error("AI 코치 기능을 사용하기 위한 API 키가 설정되지 않았습니다.")
     else:
         user_prompt = st.text_area("어떤 상황인가요?", placeholder="예: 너무 긴장돼요, 자신감이 떨어졌어요", height=100)
-        if st.button("AI에게 추천받기", use_container_width=True): # <<<<<<< 이 부분 수정: type="primary" 제거
+        if st.button("AI에게 추천받기", use_container_width=True): 
             if user_prompt:
                 with st.spinner('AI 코치가 당신만을 위한 전략을 구상 중입니다...'):
                     model = genai.GenerativeModel('gemini-1.5-flash')
@@ -319,3 +319,4 @@ elif st.session_state.menu == "🏆 명예의 전당":
             <p style="font-size: 16px; color: var(--black-color); margin-top: 8px;">"{row['전략']}"</p>
         </div>
         """, unsafe_allow_html=True)
+
