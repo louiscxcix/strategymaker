@@ -127,11 +127,11 @@ def apply_ui_styles():
                 margin-top: 2rem;
             }
             
-            /* --- 모든 주요 버튼 색상 통일 --- */
+            /* --- 모든 주요 버튼 색상 통일 (수정된 부분) --- */
             .stForm .stButton>button,
             .form-container .stButton>button {
-                background-color: #2BA7D1;
-                color: white;
+                background-color: #2BA7D1 !important;
+                color: white !important;
                 border-radius: 12px;
                 padding: 14px 0;
                 font-size: 16px;
@@ -319,4 +319,5 @@ elif st.session_state.menu == "🏆 명예의 전당":
             <p style="font-size: 16px; color: var(--black-color); margin-top: 8px;">"{row['전략']}"</p>
         </div>
         """, unsafe_allow_html=True)
+
 
