@@ -32,16 +32,28 @@ def apply_ui_styles():
                 --primary-color: #2BA7D1;
                 --black-color: #0D1628;
                 --secondary-color: #86929A;
+                --gray-color: #898D99;
                 --divider-color: #E5E7EB;
                 --bg-color: #F0F2F5;
+                --icon-bg-color: rgba(43, 167, 209, 0.1);
             }
 
-            body, .stTextArea, .stButton>button, .stTextInput {
+            body {
                 font-family: 'Noto Sans KR', sans-serif;
             }
 
+            /* --- 다크모드 방지 및 기본 스타일 설정 --- */
             .stApp {
                 background-color: var(--bg-color);
+            }
+            
+            /* Streamlit의 기본 텍스트 색상을 검정으로 강제 */
+            [data-baseweb="body"] {
+                color: var(--black-color);
+            }
+
+            h1, h2, h3, h4, h5, h6 {
+                color: var(--black-color) !important;
             }
             
             header[data-testid="stHeader"], footer {
@@ -54,22 +66,23 @@ def apply_ui_styles():
             .header-group {
                 display: flex;
                 align-items: center;
-                gap: 12px;
+                gap: 16px;
                 margin-bottom: 8px;
             }
 
             .icon-container {
-                width: 40px;
-                height: 40px;
+                width: 80px; /* 아이콘 컨테이너 크기 증가 */
+                height: 80px; /* 아이콘 컨테이너 크기 증가 */
+                background-color: var(--icon-bg-color);
+                border-radius: 50%;
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 flex-shrink: 0;
             }
             .icon-container img {
-                width: 128px !important;
-                height: 128px !important;
-                object-fit: contain !important;
+                width: 56px; /* 아이콘 이미지 크기 증가 */
+                height: 56px; /* 아이콘 이미지 크기 증가 */
             }
 
             .main-title {
@@ -86,74 +99,75 @@ def apply_ui_styles():
                 margin-bottom: 1.5rem;
             }
             
-            /* --- 메뉴 버튼 컨테이너 --- */
             div[data-testid="stHorizontalBlock"] {
-                background-color: transparent !important;
-                border: none !important;
-                padding: 0 !important;
-                margin-bottom: 1.5rem !important;
+                border: 1px solid var(--divider-color);
+                background-color: white;
+                border-radius: 14px;
+                padding: 4px !important;
+                overflow: hidden;
+                margin-bottom: 1.5rem; 
             }
             
-            /* --- 메뉴 버튼 스타일 --- */
-            div[data-testid="stHorizontalBlock"] .stButton > button {
-                background-color: #FFFFFF !important;
-                color: #444444 !important;
-                border-radius: 10px !important;
-                font-size: 14px !important;
-                font-weight: 500 !important;
-                border: 1px solid #DDDDDD !important;
-                box-shadow: none !important;
-                transition: none !important;
+            div[data-testid="stHorizontalBlock"] .stButton button {
+                background-color: white;
+                color: var(--secondary-color);
+                border-radius: 10px;
+                font-size: 14px;
+                font-weight: 500;
+                border: none;
+                padding: 0.8rem 0;
             }
-            div[data-testid="stHorizontalBlock"] .stButton > button[kind="primary"] {
-                background-color: var(--primary-color) !important;
-                color: #FFFFFF !important;
-                font-weight: 700 !important;
-                border: none !important;
+            div[data-testid="stHorizontalBlock"] .stButton button[kind="primary"] {
+                background-color: var(--primary-color);
+                color: white;
+                font-weight: 700;
             }
             
-            /* --- 일반 버튼 (전략 저장하기, AI 추천받기) --- */
-            .stButton > button,
-            .stForm button,
-            .stForm [data-testid="baseButton-secondary"] {
-                background-color: #2BA7D1 !important;
-                color: #FFFFFF !important;
-                border-radius: 12px !important;
-                padding: 12px 0 !important;
-                font-size: 16px !important;
-                font-weight: 600 !important;
-                border: none !important;
-                box-shadow: none !important;
-            }
-            .stButton > button:hover,
-            .stForm button:hover {
-                background-color: #2387A8 !important;
-                color: #FFFFFF !important;
+            .content-area {
+                margin-top: 0;
             }
 
-            /* --- 입력창 스타일 (배경 흰색 & 테두리 구분) --- */
+            .form-container {
+                background-color: white;
+                padding: 2rem;
+                border-radius: 16px;
+            }
+            
+            .form-container .stButton > button {
+                background-color: #2BA7D1 !important;
+                color: white !important;
+                border-radius: 12px !important;
+                padding: 14px 0 !important;
+                font-size: 16px !important;
+                font-weight: 500 !important;
+                border: none !important;
+            }
+            
             .stTextInput input, .stTextArea textarea {
                 background-color: #FFFFFF !important;
                 border: 1px solid var(--divider-color) !important;
                 border-radius: 12px !important;
-                padding: 10px 12px !important;
+                color: var(--black-color) !important;
             }
-
-            /* --- 불필요한 form 배경 박스 제거 --- */
-            .stForm, div[data-testid="stForm"] {
-                background: transparent !important;
-                border: none !important;
-                padding: 0 !important;
-                margin: 0 !important;
-                box-shadow: none !important;
-            }
-
+            
             .strategy-item {
                 background-color: white;
                 border: 1px solid var(--divider-color);
                 border-radius: 12px;
                 padding: 1rem 1.2rem;
                 margin-bottom: 1rem;
+            }
+            .strategy-item .stButton button {
+                background-color: #FEE2E2 !important;
+                color: #EF4444 !important;
+                font-size: 12px;
+                border-radius: 8px;
+            }
+
+            /* --- Streamlit 위젯 텍스트 색상 재정의 --- */
+            div[data-testid="stCaption"],
+            div[data-testid="stInfo"] {
+                color: var(--secondary-color) !important;
             }
         </style>
     """, unsafe_allow_html=True)
@@ -180,11 +194,11 @@ apply_ui_styles()
 
 # --- 헤더 UI (아이콘 + 제목 왼쪽 정렬) ---
 icon_path = Path(__file__).parent / "icon.png"
-icon_base64 = img_to_base_64(icon_path)
+icon_base_64 = img_to_base_64(icon_path)
 
 st.markdown('<div class="header-group">', unsafe_allow_html=True)
-if icon_base64:
-    st.markdown(f'<div class="icon-container"><img src="data:image/png;base64,{icon_base64}" alt="App Icon"></div>', unsafe_allow_html=True)
+if icon_base_64:
+    st.markdown(f'<div class="icon-container"><img src="data:image/png;base64,{icon_base_64}" alt="App Icon"></div>', unsafe_allow_html=True)
 st.markdown('<p class="main-title">큰틀전략 메이커</p>', unsafe_allow_html=True)
 st.markdown('</div>', unsafe_allow_html=True)
 
@@ -217,6 +231,7 @@ st.markdown('<div class="content-area">', unsafe_allow_html=True)
 
 # 1. '나의 큰틀전략' 메뉴
 if st.session_state.menu == "✍️ 나의 큰틀전략":
+    st.markdown('<div class="form-container">', unsafe_allow_html=True)
     with st.form("my_strategy_form"):
         st.text_input("이름 (또는 이니셜)", key="user_name")
         st.text_area("나의 큰틀전략은...", height=100, key="user_strategy")
@@ -226,6 +241,7 @@ if st.session_state.menu == "✍️ 나의 큰틀전략":
             new_data = pd.DataFrame({'이름': [st.session_state.user_name], '큰틀전략': [st.session_state.user_strategy]})
             st.session_state.my_strategies = pd.concat([st.session_state.my_strategies, new_data], ignore_index=True)
             st.success("새로운 큰틀전략이 저장되었습니다!")
+    st.markdown('</div>', unsafe_allow_html=True)
     
     st.subheader("나의 큰틀전략 목록")
     if not st.session_state.my_strategies.empty:
@@ -246,6 +262,7 @@ if st.session_state.menu == "✍️ 나의 큰틀전략":
 
 # 2. 'AI 전략 코치' 메뉴
 elif st.session_state.menu == "🤖 AI 전략 코치":
+    st.markdown('<div class="form-container">', unsafe_allow_html=True)
     st.markdown("AI에게 당신의 상황을 이야기하고 **멘탈 코칭**을 받아보세요.")
     if not api_key_configured:
         st.error("AI 코치 기능을 사용하기 위한 API 키가 설정되지 않았습니다.")
@@ -277,6 +294,7 @@ elif st.session_state.menu == "🤖 AI 전략 코치":
                             st.session_state.ai_strategies.append({'strategy': strategy, 'explanation': explanation})
             else:
                 st.warning("현재 상황을 입력해주세요.")
+    st.markdown('</div>', unsafe_allow_html=True)
     
     if st.session_state.ai_strategies:
         st.subheader("AI 코치의 추천 큰틀전략")
