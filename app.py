@@ -1,14 +1,25 @@
 import streamlit as st
 import pandas as pd
 import google.generativeai as genai
+import base64
+from pathlib import Path
 
 # --- 페이지 기본 설정 ---
 st.set_page_config(
     page_title="큰틀전략 메이커",
     page_icon="🧠",
     layout="centered",
-    initial_sidebar_state="collapsed" # 사이드바를 기본적으로 닫아둠
+    initial_sidebar_state="collapsed"
 )
+
+# --- 이미지 파일을 Base64로 인코딩하는 함수 ---
+def img_to_base_64(image_path):
+    """로컬 이미지 파일을 Base64 문자열로 변환합니다."""
+    try:
+        with open(image_path, "rb") as img_file:
+            return base64.b64encode(img_file.read()).decode()
+    except FileNotFoundError:
+        return None
 
 # --- UI 스타일 적용 함수 ---
 def apply_ui_styles():
@@ -22,8 +33,9 @@ def apply_ui_styles():
                 --black-color: #0D1628;
                 --secondary-color: #86929A;
                 --gray-color: #898D99;
-                --divider-color: #F1F1F1;
+                --divider-color: #E5E7EB;
                 --bg-color: #F0F2F5;
+                --icon-bg-color: rgba(43, 167, 209, 0.1);
             }
 
             body, .stTextArea, .stButton>button, .stTextInput {
@@ -34,12 +46,26 @@ def apply_ui_styles():
                 background-color: var(--bg-color);
             }
             
-            /* Streamlit 헤더와 기본 여백 제거 */
             header[data-testid="stHeader"], footer {
                 display: none !important;
             }
             div.block-container {
                 padding: 1.5rem 1rem 2rem 1rem !important;
+            }
+            
+            .icon-container {
+                width: 68px;
+                height: 68px;
+                background-color: var(--icon-bg-color);
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0 auto 20px auto;
+            }
+            .icon-container img {
+                width: 48px;
+                height: 48px;
             }
 
             .main-title {
@@ -52,35 +78,40 @@ def apply_ui_styles():
             .main-subtitle {
                 font-size: 16px;
                 color: var(--secondary-color);
-                text-align: center;
+                text-align: left;
+                line-height: 1.6;
                 margin-bottom: 2.5rem;
             }
             
-            /* 메뉴 버튼 스타일 */
-            div[data-testid="stHorizontalBlock"] > div {
+            div[data-testid="stHorizontalBlock"] {
                 border: 1px solid var(--divider-color);
                 background-color: white;
+                border-radius: 14px;
+                padding: 4px !important;
+                overflow: hidden;
+            }
+            div[data-testid="stHorizontalBlock"] > div {
                 padding: 0 !important;
                 margin: 0 !important;
             }
+
             div[data-testid="stHorizontalBlock"] .stButton button {
                 background-color: transparent;
                 color: var(--secondary-color);
-                border-radius: 0;
+                border-radius: 10px;
                 width: 100%;
                 font-size: 14px;
                 font-weight: 500;
                 border: none;
-                padding: 1rem 0;
+                padding: 0.8rem 0;
+                transition: background-color 0.2s, color 0.2s;
             }
-            /* 활성 메뉴 버튼 스타일 */
-            div[data-testid="stHorizontalBlock"] .stButton button.active-menu {
-                color: var(--primary-color);
-                border-bottom: 2px solid var(--primary-color);
+            div[data-testid="stHorizontalBlock"] .stButton button[kind="primary"] {
+                background-color: var(--primary-color);
+                color: white;
                 font-weight: 700;
             }
             
-            /* 폼 컨테이너 스타일 */
             .form-container {
                 background-color: white;
                 padding: 2rem;
@@ -88,15 +119,15 @@ def apply_ui_styles():
                 margin-top: 2rem;
             }
             
-            h3 { /* Subheader 스타일 */
+            h3 {
                 font-size: 20px;
                 font-weight: 700;
                 color: var(--black-color);
                 margin-top: 2rem;
             }
             
-            /* 저장하기 버튼 스타일 */
-            .stForm .stButton button {
+            .stForm .stButton>button,
+            .form-container .stButton>button[kind="primary"] {
                 background-color: var(--primary-color);
                 color: white;
                 border-radius: 12px;
@@ -106,9 +137,16 @@ def apply_ui_styles():
                 border: none;
             }
             
-            /* 목록 컨테이너 스타일 */
+            /* --- 수정된 부분: 텍스트 입력창 스타일 --- */
+            .stTextInput input, .stTextArea textarea {
+                background-color: #FFFFFF !important;
+                border: 1px solid var(--divider-color) !important;
+                border-radius: 12px !important;
+            }
+            
             .strategy-item {
-                border: 1px solid #e0e0e0;
+                background-color: white;
+                border: 1px solid var(--divider-color);
                 border-radius: 12px;
                 padding: 1rem 1.2rem;
                 margin-bottom: 1rem;
@@ -142,27 +180,39 @@ if 'ai_strategies' not in st.session_state:
 # --- UI 렌더링 시작 ---
 apply_ui_styles()
 
-st.markdown('<p class="main-title">큰틀전략 메이커</p>', unsafe_allow_html=True)
-st.markdown('<p class="main-subtitle">나만의 다짐을 기록하고, AI에게 영감을 얻고, 레전드에게 배우는 멘탈 관리</p>', unsafe_allow_html=True)
+# 아이콘 로드 및 표시
+icon_path = Path(__file__).parent / "icon.png"
+icon_base64 = img_to_base_64(icon_path)
+if icon_base64:
+    st.markdown(f"""
+        <div class="icon-container">
+            <img src="data:image/png;base64,{icon_base64}" alt="App Icon">
+        </div>
+    """, unsafe_allow_html=True)
 
-# --- 상단 메뉴 UI ---
+st.markdown('<p class="main-title">큰틀전략 메이커</p>', unsafe_allow_html=True)
+st.markdown('<p class="main-subtitle">나만의 다짐을 기록하고, AI에게 영감을 얻고,<br>레전드에게 배우는 멘탈 관리</p>', unsafe_allow_html=True)
+
+# --- 상단 메뉴 UI (콜백 방식) ---
+def set_menu(menu_selection):
+    st.session_state.menu = menu_selection
+
 cols = st.columns(3)
 menu_items = ["✍️ 나의 큰틀전략", "🤖 AI 전략 코치", "🏆 명예의 전당"]
+
 for i, item in enumerate(menu_items):
     with cols[i]:
         is_active = (st.session_state.menu == item)
-        # HTML과 CSS를 사용하여 버튼 스타일 동적 변경
-        st.markdown(f"""
-        <div class="stButton">
-            <button class="{'active-menu' if is_active else ''}" id="{item}" onclick="document.getElementById('{item}_hidden').click()">
-                {item}
-            </button>
-        </div>
-        """, unsafe_allow_html=True)
-        # 숨겨진 버튼을 사용하여 상태 변경 트리거
-        if st.button(item, key=f"{item}_hidden", use_container_width=True, type="secondary"):
-            st.session_state.menu = item
-            st.rerun()
+        button_type = "primary" if is_active else "secondary"
+        
+        st.button(
+            item, 
+            key=f"button_{i}", 
+            use_container_width=True, 
+            type=button_type,
+            on_click=set_menu,
+            args=(item,)
+        )
 
 
 # --- 메인 화면 로직 ---
@@ -210,7 +260,6 @@ elif st.session_state.menu == "🤖 AI 전략 코치":
         if st.button("AI에게 추천받기", use_container_width=True, type="primary"):
             if user_prompt:
                 with st.spinner('AI 코치가 당신만을 위한 전략을 구상 중입니다...'):
-                    # (API 호출 로직은 기존과 동일)
                     model = genai.GenerativeModel('gemini-1.5-flash')
                     prompt = f"""
                     You are a world-class performance psychologist. Your specialty is creating a 'Big-Picture Strategy' (큰틀전략).
@@ -232,7 +281,6 @@ elif st.session_state.menu == "🤖 AI 전략 코치":
                             strategy = block.split('[전략]:')[1].split('[해설]:')[0].strip()
                             explanation = block.split('[해설]:')[1].strip()
                             st.session_state.ai_strategies.append({'strategy': strategy, 'explanation': explanation})
-
             else:
                 st.warning("현재 상황을 입력해주세요.")
     st.markdown('</div>', unsafe_allow_html=True)
@@ -240,9 +288,10 @@ elif st.session_state.menu == "🤖 AI 전략 코치":
     if st.session_state.ai_strategies:
         st.subheader("AI 코치의 추천 큰틀전략")
         for item in st.session_state.ai_strategies:
-            with st.container(border=True):
-                st.markdown(f"#### 💡 {item['strategy']}")
-                st.caption(item['explanation'])
+            st.markdown('<div class="strategy-item">', unsafe_allow_html=True)
+            st.markdown(f"#### 💡 {item['strategy']}")
+            st.caption(item['explanation'])
+            st.markdown('</div>', unsafe_allow_html=True)
 
 # 3. '명예의 전당' 메뉴
 elif st.session_state.menu == "🏆 명예의 전당":
@@ -252,12 +301,11 @@ elif st.session_state.menu == "🏆 명예의 전당":
         {'선수': '박지성', '종목': '축구', '전략': '쓰러질지언정 무릎은 꿇지 않는다.'},
         {'선수': '손흥민', '종목': '축구', '전략': '어제의 기쁨은 어제로 끝내고, 새로운 날을 준비한다.'},
         {'선수': '이상혁 \'페이커\'', '종목': 'e스포츠', '전략': '방심하지 않고, 이기든 지든 내 플레이를 하자.'},
-        # ... (이하 생략)
     ]
     df_athletes = pd.DataFrame(athletes_data)
     
     sports = ['모두 보기'] + sorted(df_athletes['종목'].unique())
-    selected_sport = st.selectbox('종목별로 보기', sports)
+    selected_sport = st.selectbox('종목별로 보기', sports, label_visibility="collapsed")
 
     if selected_sport == '모두 보기':
         filtered_df = df_athletes
@@ -271,3 +319,4 @@ elif st.session_state.menu == "🏆 명예의 전당":
             <p style="font-size: 16px; color: var(--black-color); margin-top: 8px;">"{row['전략']}"</p>
         </div>
         """, unsafe_allow_html=True)
+
