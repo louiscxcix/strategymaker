@@ -56,8 +56,14 @@ def apply_ui_styles():
 
             /* 헤더 */
             .header-group { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; margin-bottom: 20px; }
-            .icon-container { padding: 8px; background: var(--icon-bg-color); border-radius: 48px; }
-            .icon-container img { width: 52px; height: 52px; display: block; }
+            .icon-container { 
+                width: 68px; height: 68px;
+                padding: 8px; 
+                background: var(--icon-bg-color); 
+                border-radius: 50%;
+                display: flex; justify-content: center; align-items: center;
+            }
+            .icon-container img { width: 52px; height: 52px; display: block; object-fit: contain; }
             .title-group { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
             .main-title { font-size: 20px; font-weight: 700; line-height: 32px; color: var(--black-color) !important; }
             .main-subtitle { font-size: 13px; font-weight: 400; line-height: 20px; color: var(--secondary-color) !important; }
@@ -204,19 +210,31 @@ elif st.session_state.menu == "🤖 AI 전략 코치":
                 with st.spinner('AI 코치가 당신만을 위한 전략을 구상 중입니다...'):
                     try:
                         model = genai.GenerativeModel('gemini-1.5-flash')
+
+                        # ================================================================== #
+                        # ===== ✨ 여기가 수정된 프롬프트입니다 ✨ ===== #
+                        # ================================================================== #
                         prompt = f"""
-                        You are a world-class performance psychologist who creates 'Big-Picture Strategies' (큰틀전략) for athletes. An athlete is facing this situation: '{user_prompt}'.
-                        Generate THREE completely different 'Big-Picture Strategies' for them in KOREAN. Each strategy must come from a unique psychological angle.
-                        For each strategy, provide: - **[전략]**: The core strategy phrase. - **[해설]**: A concise explanation of about two sentences (around 100 characters).
+                        You are a world-class performance psychologist who creates 'Big-Picture Strategies' (큰틀전략) for athletes.
+                        An athlete is facing this situation: '{user_prompt}'.
+
+                        Generate THREE completely different 'Big-Picture Strategies' for them in KOREAN.
+                        Each strategy must come from a unique psychological angle (e.g., cognitive reframing, behavioral focus, mindfulness, motivational, process-oriented).
+
+                        For each strategy, provide:
+                        - **[전략]**: The core strategy phrase.
+                        - **[해설]**: A detailed and helpful explanation of about 3-4 sentences. Explain the psychological principle behind the strategy and how the athlete can apply it in their situation.
+
                         Format the output exactly like this, separating each with '---':
                         [전략]: (Strategy in Korean)
-                        [해설]: (Explanation in Korean)
+                        [해설]: (Detailed explanation in Korean)
                         ---
                         (Repeat for all three strategies)
                         """
                         response = model.generate_content(prompt)
                         st.session_state.ai_strategies = []
                         text_out = getattr(response, "text", None) or ""
+                        
                         for block in text_out.split('---'):
                             if '[전략]:' in block and '[해설]:' in block:
                                 strategy = block.split('[전략]:')[1].split('[해설]:')[0].strip()
