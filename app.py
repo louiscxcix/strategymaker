@@ -82,29 +82,31 @@ def apply_ui_styles():
             .stTextArea textarea { min-height: 81px; }
             
             /* ================================================================== */
-            /* ===== ✨ 여기가 수정된 버튼 스타일입니다 ✨ ===== */
+            /* ===== ✨ 버튼 스타일 강제 적용 (최종 수정) ✨ ===== */
             /* ================================================================== */
-            .submit-button-container { width: 100%; margin-top: 20px; }
-            .submit-button-container .stButton > button,
-            .submit-button-container .stButton > button:hover,
-            .submit-button-container .stButton > button:active,
-            .submit-button-container .stButton > button:focus {
-                display: inline-flex !important;
+            
+            /* '전략 저장하기' 폼 제출 버튼과 'AI에게 추천받기' 일반 버튼에 공통 스타일 적용 */
+            div[data-testid="stForm"] button[type="submit"],
+            .ai-button-container .stButton > button {
+                display: flex !important;
                 justify-content: center !important;
                 align-items: center !important;
                 width: 100% !important;
                 padding: 14px 36px !important;
                 font-size: 14px !important;
                 font-weight: 400 !important;
-                line-height: 20px !important;
                 color: white !important;
-                background: linear-gradient(135deg, rgba(98, 120.20, 246, 0.20) 0%, rgba(29, 48, 78, 0) 100%), var(--primary-color) !important;
+                background: linear-gradient(135deg, rgba(98, 120, 246, 0.20) 0%, rgba(29, 48, 78, 0) 100%), var(--primary-color) !important;
                 border-radius: 12px !important;
                 box-shadow: 0px 5px 10px rgba(26, 26, 26, 0.10) !important;
                 border: none !important;
             }
-            .submit-button-container .stButton > button:hover {
-                background: linear-gradient(135deg, rgba(98, 120, 246, 0.20) 0%, rgba(29, 48, 78, 0) 100%), var(--primary-color-hover) !important;
+
+            /* 버튼 호버 효과 */
+            div[data-testid="stForm"] button[type="submit"]:hover,
+            .ai-button-container .stButton > button:hover {
+                color: white !important;
+                background: var(--primary-color-hover) !important;
                 box-shadow: 0px 2px 8px rgba(26, 26, 26, 0.10) !important;
             }
             /* ================================================================== */
@@ -194,9 +196,8 @@ if st.session_state.menu == "✍️ 나의 큰틀전략":
         st.text_area("user_strategy_input", key="user_strategy", placeholder="나만의 다짐이나 전략을 적어보세요", label_visibility="collapsed")
         st.markdown('</div>', unsafe_allow_html=True)
         
-        st.markdown('<div class="submit-button-container">', unsafe_allow_html=True)
+        # 폼 제출 버튼 (컨테이너 없이 직접 호출)
         submitted = st.form_submit_button("전략 저장하기")
-        st.markdown('</div>', unsafe_allow_html=True)
 
         if submitted and st.session_state.get("user_name") and st.session_state.get("user_strategy"):
             new_data = pd.DataFrame({'이름': [st.session_state.user_name], '큰틀전략': [st.session_state.user_strategy]})
@@ -231,7 +232,7 @@ elif st.session_state.menu == "🤖 AI 전략 코치":
         st.markdown('</div>', unsafe_allow_html=True)
 
         # --- 추천받기 버튼 ---
-        st.markdown('<div class="submit-button-container">', unsafe_allow_html=True)
+        st.markdown('<div class="ai-button-container">', unsafe_allow_html=True)
         if st.button("AI에게 추천받기"): 
             if user_prompt:
                 with st.spinner('AI 코치가 당신만을 위한 전략을 구상 중입니다...'):
