@@ -86,7 +86,7 @@ def apply_ui_styles():
                 background-color: white !important;
                 border-radius: 12px;
                 padding: 4px !important;
-                margin-bottom: 2rem; 
+                margin-bottom: 1rem;
             }
             /* 상단 메뉴 버튼 공통 */
             div[data-testid="stHorizontalBlock"] .stButton button {
@@ -116,7 +116,7 @@ def apply_ui_styles():
                 font-size: 18px;
                 font-weight: 700;
                 color: var(--black-color);
-                margin-bottom: 16px; /* ✨ 수정: 라벨과 입력창 사이 여백 증가 */
+                margin-bottom: 22px;
                 line-height: 1.5;
                 display: block;
             }
@@ -126,7 +126,7 @@ def apply_ui_styles():
             }
             .input-label.strong {
                 margin-top: -4px;
-                margin-bottom: 16px; /* ✨ 수정: 라벨과 입력창 사이 여백 증가 */
+                margin-bottom: 22px;
             }
 
             /* 입력창 스타일 */
@@ -156,7 +156,7 @@ def apply_ui_styles():
             /* 목록 헤더 */
             .list-header { 
                 margin-top: 2rem;
-                margin-bottom: 0.5rem; /* ✨ 수정: 목록과 헤더 사이 여백 감소 */
+                margin-bottom: 0.25rem;
             }
             .list-header .label { font-size: 12px; color: var(--secondary-color); }
             .list-header .title { font-size: 18px; font-weight: 700; color: var(--black-color); }
@@ -167,7 +167,7 @@ def apply_ui_styles():
                 border: none !important;
                 border-bottom: 1px solid var(--divider-color) !important;
                 border-radius: 0px;
-                padding: 1.2rem 0.5rem; /* ✨ 수정: 목록 좌우 여백 추가 */
+                padding: 1.2rem 0.8rem;
                 margin-bottom: 0rem;
                 color: var(--black-color) !important;
             }
@@ -316,18 +316,18 @@ elif st.session_state.menu == "🤖 AI 전략 코치":
                         You are a world-class performance psychologist who creates 'Big-Picture Strategies' (큰틀전략) for athletes.
                         An athlete is facing this situation: '{user_prompt}'.
 
-                        Generate FIVE completely different 'Big-Picture Strategies' for them in KOREAN.
+                        Generate THREE completely different 'Big-Picture Strategies' for them in KOREAN.
                         Each strategy must come from a unique psychological angle (e.g., cognitive reframing, behavioral focus, mindfulness, motivational, process-oriented).
 
                         For each strategy, provide:
                         - **[전략]**: The core strategy phrase.
-                        - **[해설]**: A very concise, single-sentence explanation (strictly under 50 characters).
+                        - **[해설]**: A concise explanation of about two sentences (around 100 characters).
 
                         Format the output exactly like this, separating each with '---':
                         [전략]: (Strategy in Korean)
-                        [해설]: (Explanation in Korean, max 50 characters)
+                        [해설]: (Explanation in Korean, around 100 characters)
                         ---
-                        (Repeat for all five strategies)
+                        (Repeat for all three strategies)
                         """
                         response = model.generate_content(prompt)
                         st.session_state.ai_strategies = []
@@ -355,12 +355,23 @@ elif st.session_state.menu == "🤖 AI 전략 코치":
 
 # 3. '명예의 전당' 메뉴
 elif st.session_state.menu == "🏆 명예의 전당":
+    # ================================================================== #
+    # ===== ✨ 여기가 수정된 명예의 전당 목록입니다 ✨ ===== #
+    # ================================================================== #
     athletes_data = [
         {'선수': '김연아', '종목': '피겨 스케이팅', '전략': '무슨 일이 있더라도, 내가 할 수 있는 것에만 집중하고 최선을 다할 뿐이다.'},
         {'선수': '마이클 조던', '종목': '농구', '전략': '한계에 부딪히더라도, 그건 환상일 뿐이다.'},
         {'선수': '박지성', '종목': '축구', '전략': '쓰러질지언정 무릎은 꿇지 않는다.'},
         {'선수': '손흥민', '종목': '축구', '전략': '어제의 기쁨은 어제로 끝내고, 새로운 날을 준비한다.'},
         {'선수': '이상혁 \'페이커\'', '종목': 'e스포츠', '전략': '방심하지 않고, 이기든 지든 내 플레이를 하자.'},
+        {'선수': '박태환', '종목': '수영', '전략': '심장이 터질 것 같아도, 포기하지 않으면 내일이 온다.'},
+        {'선수': '장미란', '종목': '역도', '전략': '들 수 없는 바벨은 없다. 내가 들지 못했을 뿐이다.'},
+        {'선수': '류현진', '종목': '야구', '전략': '마운드 위에서는 내가 최고라는 생각으로 던진다.'},
+        {'선수': '김자인', '종목': '클라이밍', '전략': '가장 높은 곳을 향한 두려움은, 오직 내 안의 작은 속삭임일 뿐이다.'},
+        {'선수': '리오넬 메시', '종목': '축구', '전략': '오늘의 노력이 내일의 나를 만든다.'},
+        {'선수': '타이거 우즈', '종목': '골프', '전략': '아무리 힘들어도, 나는 항상 이길 수 있다고 믿는다.'},
+        {'선수': '우사인 볼트', '종목': '육상', '전략': '나는 한계를 생각하지 않는다. 그저 달릴 뿐이다.'},
+        {'선수': '세레나 윌리엄스', '종목': '테니스', '전략': '나는 다른 사람의 의견으로 나를 정의하지 않는다.'},
     ]
     df_athletes = pd.DataFrame(athletes_data)
     
