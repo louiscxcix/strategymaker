@@ -116,8 +116,9 @@ def apply_ui_styles():
                 font-size: 18px;
                 font-weight: 700;
                 color: var(--black-color);
-                margin-bottom: 12px;
+                margin-bottom: 16px; /* ✨ 수정: 라벨과 입력창 사이 여백 증가 */
                 line-height: 1.5;
+                display: block;
             }
             .input-label.light {
                 font-weight: 400;
@@ -125,6 +126,7 @@ def apply_ui_styles():
             }
             .input-label.strong {
                 margin-top: -4px;
+                margin-bottom: 16px; /* ✨ 수정: 라벨과 입력창 사이 여백 증가 */
             }
 
             /* 입력창 스타일 */
@@ -152,7 +154,10 @@ def apply_ui_styles():
              }
 
             /* 목록 헤더 */
-            .list-header { margin-top: 2rem; }
+            .list-header { 
+                margin-top: 2rem;
+                margin-bottom: 0.5rem; /* ✨ 수정: 목록과 헤더 사이 여백 감소 */
+            }
             .list-header .label { font-size: 12px; color: var(--secondary-color); }
             .list-header .title { font-size: 18px; font-weight: 700; color: var(--black-color); }
 
@@ -162,7 +167,7 @@ def apply_ui_styles():
                 border: none !important;
                 border-bottom: 1px solid var(--divider-color) !important;
                 border-radius: 0px;
-                padding: 1.2rem 0.2rem;
+                padding: 1.2rem 0.5rem; /* ✨ 수정: 목록 좌우 여백 추가 */
                 margin-bottom: 0rem;
                 color: var(--black-color) !important;
             }
@@ -291,7 +296,6 @@ if st.session_state.menu == "✍️ 나의 큰틀전략":
 
 # 2. 'AI 전략 코치' 메뉴
 elif st.session_state.menu == "🤖 AI 전략 코치":
-    # --- ✨✨✨ UI 수정 시작 ✨✨✨ ---
     if not api_key_configured:
         st.error("AI 코치 기능을 사용하기 위한 API 키가 설정되지 않았습니다.")
     else:
@@ -348,7 +352,6 @@ elif st.session_state.menu == "🤖 AI 전략 코치":
             st.markdown(f"##### 💡 {item['strategy']}")
             st.caption(item['explanation'])
             st.markdown('</div>', unsafe_allow_html=True)
-    # --- ✨✨✨ UI 수정 끝 ✨✨✨ ---
 
 # 3. '명예의 전당' 메뉴
 elif st.session_state.menu == "🏆 명예의 전당":
