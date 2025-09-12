@@ -30,178 +30,75 @@ def apply_ui_styles():
             
             :root {
                 --primary-color: #2BA7D1;
-                --primary-color-hover: #2596BC;
                 --black-color: #0D1628;
                 --secondary-color: #86929A;
                 --divider-color: #F1F1F1;
-                --bg-color: #F9F8FB;
-                --icon-bg-color: rgba(43, 167, 209, 0.1);
+                --icon-bg-color: rgba(12, 124, 162, 0.04);
+                --app-bg: linear-gradient(315deg, rgba(77, 0, 200, 0.03) 0%, rgba(29, 48, 78, 0.03) 100%), white;
             }
 
             /* 기본 배경/폰트 */
             html, body, .stApp, [data-testid="stAppViewContainer"], [data-testid="stSidebar"] {
-                background-color: var(--bg-color) !important;
+                background: var(--app-bg) !important;
                 color: var(--black-color) !important;
             }
-            [data-testid="stSidebar"] { background-color: #FFFFFF !important; color: var(--black-color) !important; }
             body { font-family: 'Noto Sans KR', sans-serif !important; }
 
             /* 헤더 / 푸터 숨김 */
             header[data-testid="stHeader"], footer { display: none !important; }
 
-            div.block-container { padding: 2rem 1rem 3rem 1rem !important; }
+            div.block-container { padding: 1.5rem 1rem 3rem 1rem !important; }
 
-            /* Form wrapper 자체를 화면에서 제거 */
-            .stForm, div[data-testid="stForm"], div[data-testid="stForm"] > div, div[data-testid="stForm"] > div > div {
-                background: transparent !important;
-                border: none !important;
-                padding: 0 !important;
-                margin: 0 !important;
-                box-shadow: none !important;
-                display: contents !important; 
+            /* Form wrapper 제거 */
+            .stForm, div[data-testid="stForm"], div[data-testid="stForm"] > div {
+                background: transparent !important; border: none !important; padding: 0 !important; margin: 0 !important; box-shadow: none !important; display: contents !important; 
             }
 
-            /* 헤더 그룹 */
-            .header-group {
-                display: flex;
-                align-items: center;
-                gap: 12px;
-                margin-bottom: 16px; /* ✨ 수정: 헤더와 부제목 사이 여백 증가 */
-            }
-            .icon-container {
-                width: 68px; height: 68px;
-                background-color: var(--icon-bg-color);
-                border-radius: 50%;
-                display: flex; align-items: center; justify-content: center;
-                flex-shrink: 0;
-            }
-            .icon-container img { width: 52px; height: 52px; object-fit: contain; }
+            /* 헤더 */
+            .header-group { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; margin-bottom: 20px; }
+            .icon-container { padding: 8px; background: var(--icon-bg-color); border-radius: 48px; }
+            .icon-container img { width: 52px; height: 52px; display: block; }
+            .title-group { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
+            .main-title { font-size: 20px; font-weight: 700; line-height: 32px; color: var(--black-color) !important; }
+            .main-subtitle { font-size: 13px; font-weight: 400; line-height: 20px; color: var(--secondary-color) !important; }
 
-            .main-title { font-size: 20px; font-weight: 700; margin: 0; color: var(--black-color) !important; }
-            .main-subtitle { font-size: 13px; color: var(--secondary-color) !important; margin-bottom: 1.5rem; line-height: 1.5; }
-
-            /* 상단 메뉴 블록 스타일 */
+            /* 상단 메뉴 */
             div[data-testid="stHorizontalBlock"] {
-                border: 1px solid var(--divider-color) !important;
-                background-color: white !important;
-                border-radius: 12px;
-                padding: 4px !important;
-                margin-bottom: 0.5rem;
-            }
-            /* 상단 메뉴 버튼 공통 */
+                background: white !important; border: 1px solid var(--divider-color) !important; border-radius: 12px; padding: 4px !important; margin-bottom: 20px; }
             div[data-testid="stHorizontalBlock"] .stButton button {
-                background-color: transparent !important;
-                color: var(--secondary-color) !important;
-                border-radius: 8px;
-                font-size: 14px;
-                font-weight: 500;
-                border: none;
-                padding: 0.6rem 0;
-            }
-            /* 활성화된 메뉴 버튼 */
+                background: transparent !important; color: var(--secondary-color) !important; border-radius: 8px; font-size: 12px; font-weight: 400; border: none; padding: 10px 4px; }
             div[data-testid="stHorizontalBlock"] .stButton button[kind="primary"] {
-                background-color: var(--primary-color) !important;
-                color: white !important;
-                font-weight: 700;
-                box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.05);
-            }
+                background: var(--primary-color) !important; color: white !important; font-weight: 700; box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.02); }
 
-            /* 입력폼 섹션 스타일 */
-            .form-section {
-                padding-bottom: 20px;
-                margin-bottom: 20px;
-                border-bottom: 1px solid var(--divider-color);
-            }
-            .input-label {
-                font-size: 18px;
-                font-weight: 700;
-                color: var(--black-color);
-                margin-bottom: 22px;
-                line-height: 1.5;
-                display: block;
-            }
-            .input-label.light {
-                font-weight: 400;
-                margin-bottom: 0;
-                color: var(--secondary-color); /* ✨ 수정: AI 코치 안내 문구 색상 변경 */
-            }
-            .input-label.strong {
-                margin-top: 0.25rem; /* ✨ 수정: AI 코치 안내 문구 줄간격 조정 */
-                margin-bottom: 22px;
-            }
-
-            /* 입력창 스타일 */
+            /* 입력폼 */
+            .form-section { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; width: 100%; padding-bottom: 20px; margin-bottom: 20px; border-bottom: 1px solid var(--divider-color); }
+            .input-label { font-size: 18px; font-weight: 700; line-height: 28px; color: var(--black-color); }
+            .input-label.light { font-weight: 400; }
+            .stTextInput, .stTextArea { width: 100%; }
             .stTextInput input, .stTextArea textarea {
-                background-color: #FFFFFF !important;
-                border: 1px solid var(--divider-color) !important;
-                border-radius: 12px !important;
-                color: var(--black-color) !important;
-                padding: 12px 14px !important;
-            }
+                background-color: white !important; border: 1px solid var(--divider-color) !important; border-radius: 12px !important; color: var(--black-color) !important; }
+            .stTextArea textarea { min-height: 81px; }
 
-            /* 제출 버튼 컨테이너 */
-            .submit-button-container {
-                margin-top: 1.5rem;
-            }
+            /* 제출/실행 버튼 */
+            .submit-button-container { width: 100%; margin-top: 20px; }
             .submit-button-container .stButton button {
-                background: var(--primary-color) !important;
-                color: white !important;
-                border-radius: 12px !important;
-                padding: 14px 0 !important;
-                font-size: 16px !important;
-                font-weight: 700 !important;
-                border: none !important;
-                box-shadow: 0px 5px 10px rgba(43, 167, 209, 0.2);
-            }
-             .submit-button-container .stButton button:hover {
-                background: var(--primary-color-hover) !important;
-             }
+                background: var(--primary-color) !important; color: white !important; border-radius: 12px !important; padding: 14px 0 !important; font-size: 14px !important; font-weight: 700 !important; border: none !important; box-shadow: 0px 5px 10px rgba(26, 26, 26, 0.10); }
+            .submit-button-container .stButton button:hover { background: #2596BC !important; }
 
-            /* 목록 헤더 */
-            .list-header { 
-                margin-top: 2rem;
-                margin-bottom: 0.25rem;
-            }
+            /* 목록 */
+            .list-container { margin-top: 40px; }
+            .list-header { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; }
             .list-header .label { font-size: 12px; color: var(--secondary-color); }
-            .list-header .title { font-size: 18px; font-weight: 700; color: var(--black-color); }
-
-            /* 목록 아이템 (공통) */
-            .strategy-item {
-                background-color: transparent !important;
-                border: none !important;
-                border-bottom: 1px solid var(--divider-color) !important;
-                border-radius: 0px;
-                padding: 1.2rem 0.8rem;
-                margin-bottom: 0rem;
-                color: var(--black-color) !important;
-            }
-             /* 마지막 아이템은 밑줄 제거 */
-            .strategy-item:last-child {
-                border-bottom: none !important;
-            }
+            .list-header .title { font-size: 18px; font-weight: 700; line-height: 28px; color: var(--black-color); }
             
-            /* 삭제 버튼 */
+            .strategy-item { padding: 16px 8px; border-bottom: 1px solid var(--divider-color); }
+            .strategy-item:last-child { border-bottom: none; }
             .strategy-item .stButton button {
-                background-color: var(--divider-color) !important;
-                color: var(--secondary-color) !important;
-                font-size: 12px;
-                font-weight: 500;
-                border-radius: 8px;
-                border: none;
-            }
-            .strategy-item .stButton button:hover {
-                background-color: #e5e7eb !important;
-                color: var(--black-color) !important;
-            }
-
+                background-color: var(--divider-color) !important; color: var(--secondary-color) !important; font-size: 12px; border-radius: 8px; border: none; }
+            
             /* 명예의 전당 카드 */
             .hall-of-fame-card {
-                background-color: white; 
-                border: 1px solid var(--divider-color); 
-                border-radius: 12px; 
-                padding: 1rem 1.2rem; 
-                margin-bottom: 1rem;
-            }
+                background-color: white; border: 1px solid var(--divider-color); border-radius: 12px; padding: 1rem 1.2rem; margin-bottom: 1rem;}
 
         </style>
     """, unsafe_allow_html=True)
@@ -225,55 +122,45 @@ if 'ai_strategies' not in st.session_state:
 # --- UI 렌더링 시작 ---
 apply_ui_styles()
 
-# --- 헤더 UI (아이콘 + 제목) ---
+# --- 헤더 UI ---
 icon_path = Path("icon.png")
 icon_base_64 = img_to_base_64(str(icon_path))
 
 st.markdown('<div class="header-group">', unsafe_allow_html=True)
 if icon_base_64:
     st.markdown(f'<div class="icon-container"><img src="data:image/png;base64,{icon_base_64}" alt="App Icon"></div>', unsafe_allow_html=True)
-st.markdown('<div><p class="main-title">큰틀전략</p></div>', unsafe_allow_html=True)
+st.markdown('<div class="title-group"><p class="main-title">큰틀전략</p><p class="main-subtitle">나만의 다짐을 기록하고, AI에게 영감을 얻고,<br>레전드에게 배우는 멘탈 관리</p></div>', unsafe_allow_html=True)
 st.markdown('</div>', unsafe_allow_html=True)
-st.markdown('<p class="main-subtitle">나만의 다짐을 기록하고, AI에게 영감을 얻고,<br>레전드에게 배우는 멘탈 관리</p>', unsafe_allow_html=True)
 
-
-# --- 상단 메뉴 UI (콜백 방식) ---
+# --- 상단 메뉴 UI ---
 def set_menu(menu_selection):
     st.session_state.menu = menu_selection
 
 cols = st.columns(3)
 menu_items = ["✍️ 나의 큰틀전략", "🤖 AI 전략 코치", "🏆 명예의 전당"]
-
 for i, item in enumerate(menu_items):
     with cols[i]:
         st.button(
-            item,
-            key=f"button_{i}",
-            use_container_width=True,
+            item, key=f"button_{i}", use_container_width=True,
             type="primary" if st.session_state.menu == item else "secondary",
-            on_click=set_menu,
-            args=(item,)
+            on_click=set_menu, args=(item,)
         )
 
 # --- 메인 화면 로직 ---
-st.markdown('<div class="content-area">', unsafe_allow_html=True)
 
 # 1. '나의 큰틀전략' 메뉴
 if st.session_state.menu == "✍️ 나의 큰틀전략":
     with st.form("my_strategy_form"):
-        # --- 이름 입력 섹션 ---
         st.markdown('<div class="form-section">', unsafe_allow_html=True)
         st.markdown('<p class="input-label">이름 (또는 이니셜)</p>', unsafe_allow_html=True)
         st.text_input("user_name_input", key="user_name", placeholder="이름을 입력하세요", label_visibility="collapsed")
         st.markdown('</div>', unsafe_allow_html=True)
 
-        # --- 큰틀전략 입력 섹션 ---
         st.markdown('<div class="form-section">', unsafe_allow_html=True)
-        st.markdown('<p class="input-label">나의 큰틀전략은...</p>', unsafe_allow_html=True)
-        st.text_area("user_strategy_input", height=100, key="user_strategy", placeholder="나만의 다짐이나 전략을 적어보세요", label_visibility="collapsed")
+        st.markdown('<p class="input-label">나의 큰틀전략은?</p>', unsafe_allow_html=True)
+        st.text_area("user_strategy_input", key="user_strategy", placeholder="나만의 다짐이나 전략을 적어보세요", label_visibility="collapsed")
         st.markdown('</div>', unsafe_allow_html=True)
         
-        # --- 저장 버튼 ---
         st.markdown('<div class="submit-button-container">', unsafe_allow_html=True)
         submitted = st.form_submit_button("전략 저장하기", use_container_width=True)
         st.markdown('</div>', unsafe_allow_html=True)
@@ -282,9 +169,9 @@ if st.session_state.menu == "✍️ 나의 큰틀전략":
             new_data = pd.DataFrame({'이름': [st.session_state.user_name], '큰틀전략': [st.session_state.user_strategy]})
             st.session_state.my_strategies = pd.concat([st.session_state.my_strategies, new_data], ignore_index=True)
             st.success("새로운 큰틀전략이 저장되었습니다!")
-    
-    # --- 나의 큰틀전략 목록 ---
+
     if not st.session_state.my_strategies.empty:
+        st.markdown('<div class="list-container">', unsafe_allow_html=True)
         st.markdown('<div class="list-header"><p class="label">큰틀전략</p><p class="title">나의 큰틀전략 목록</p></div>', unsafe_allow_html=True)
         for index, row in reversed(list(st.session_state.my_strategies.iterrows())):
             st.markdown('<div class="strategy-item">', unsafe_allow_html=True)
@@ -297,6 +184,7 @@ if st.session_state.menu == "✍️ 나의 큰틀전략":
                     st.session_state.my_strategies = st.session_state.my_strategies.drop(index).reset_index(drop=True)
                     st.rerun()
             st.markdown('</div>', unsafe_allow_html=True)
+        st.markdown('</div>', unsafe_allow_html=True)
 
 # 2. 'AI 전략 코치' 메뉴
 elif st.session_state.menu == "🤖 AI 전략 코치":
@@ -305,7 +193,7 @@ elif st.session_state.menu == "🤖 AI 전략 코치":
     else:
         # --- AI 코치 입력 섹션 ---
         st.markdown('<div class="form-section">', unsafe_allow_html=True)
-        st.markdown('<p class="input-label light">AI에게 상황을 말하고 코칭을 받아보세요</p><p class="input-label strong">어떤 상황인가요?</p>', unsafe_allow_html=True)
+        st.markdown('<div><p class="input-label light">AI에게 상황을 말하고 코칭을 받아보세요</p><p class="input-label"><strong>어떤 상황인가요?</strong></p></div>', unsafe_allow_html=True)
         user_prompt = st.text_area("ai_prompt_input", height=100, placeholder="예: 너무 긴장돼요, 자신감이 떨어졌어요", label_visibility="collapsed")
         st.markdown('</div>', unsafe_allow_html=True)
 
@@ -317,26 +205,18 @@ elif st.session_state.menu == "🤖 AI 전략 코치":
                     try:
                         model = genai.GenerativeModel('gemini-1.5-flash')
                         prompt = f"""
-                        You are a world-class performance psychologist who creates 'Big-Picture Strategies' (큰틀전략) for athletes.
-                        An athlete is facing this situation: '{user_prompt}'.
-
-                        Generate THREE completely different 'Big-Picture Strategies' for them in KOREAN.
-                        Each strategy must come from a unique psychological angle (e.g., cognitive reframing, behavioral focus, mindfulness, motivational, process-oriented).
-
-                        For each strategy, provide:
-                        - **[전략]**: The core strategy phrase.
-                        - **[해설]**: A concise explanation of about two sentences (around 100 characters).
-
+                        You are a world-class performance psychologist who creates 'Big-Picture Strategies' (큰틀전략) for athletes. An athlete is facing this situation: '{user_prompt}'.
+                        Generate THREE completely different 'Big-Picture Strategies' for them in KOREAN. Each strategy must come from a unique psychological angle.
+                        For each strategy, provide: - **[전략]**: The core strategy phrase. - **[해설]**: A concise explanation of about two sentences (around 100 characters).
                         Format the output exactly like this, separating each with '---':
                         [전략]: (Strategy in Korean)
-                        [해설]: (Explanation in Korean, around 100 characters)
+                        [해설]: (Explanation in Korean)
                         ---
                         (Repeat for all three strategies)
                         """
                         response = model.generate_content(prompt)
                         st.session_state.ai_strategies = []
                         text_out = getattr(response, "text", None) or ""
-                        
                         for block in text_out.split('---'):
                             if '[전략]:' in block and '[해설]:' in block:
                                 strategy = block.split('[전략]:')[1].split('[해설]:')[0].strip()
@@ -350,12 +230,15 @@ elif st.session_state.menu == "🤖 AI 전략 코치":
     
     # --- AI 코치 추천 목록 ---
     if st.session_state.ai_strategies:
+        st.markdown('<div class="list-container">', unsafe_allow_html=True)
         st.markdown('<div class="list-header"><p class="label">큰틀전략</p><p class="title">AI 코치의 큰틀전략</p></div>', unsafe_allow_html=True)
         for item in st.session_state.ai_strategies:
             st.markdown('<div class="strategy-item">', unsafe_allow_html=True)
             st.markdown(f"##### 💡 {item['strategy']}")
             st.caption(item['explanation'])
             st.markdown('</div>', unsafe_allow_html=True)
+        st.markdown('</div>', unsafe_allow_html=True)
+
 
 # 3. '명예의 전당' 메뉴
 elif st.session_state.menu == "🏆 명예의 전당":
@@ -388,5 +271,3 @@ elif st.session_state.menu == "🏆 명예의 전당":
             <p style="font-size: 16px; color: var(--black-color); margin-top: 8px;">"{row['전략']}"</p>
         </div>
         """, unsafe_allow_html=True)
-
-st.markdown('</div>', unsafe_allow_html=True)
