@@ -66,7 +66,7 @@ def apply_ui_styles():
                 display: flex;
                 align-items: center;
                 gap: 12px;
-                margin-bottom: 8px;
+                margin-bottom: 16px; /* ✨ 수정: 헤더와 부제목 사이 여백 증가 */
             }
             .icon-container {
                 width: 68px; height: 68px;
@@ -86,7 +86,7 @@ def apply_ui_styles():
                 background-color: white !important;
                 border-radius: 12px;
                 padding: 4px !important;
-                margin-bottom: 1rem;
+                margin-bottom: 0.5rem;
             }
             /* 상단 메뉴 버튼 공통 */
             div[data-testid="stHorizontalBlock"] .stButton button {
@@ -123,9 +123,10 @@ def apply_ui_styles():
             .input-label.light {
                 font-weight: 400;
                 margin-bottom: 0;
+                color: var(--secondary-color); /* ✨ 수정: AI 코치 안내 문구 색상 변경 */
             }
             .input-label.strong {
-                margin-top: -4px;
+                margin-top: 0.25rem; /* ✨ 수정: AI 코치 안내 문구 줄간격 조정 */
                 margin-bottom: 22px;
             }
 
@@ -138,7 +139,10 @@ def apply_ui_styles():
                 padding: 12px 14px !important;
             }
 
-            /* 제출 버튼 컨테이너 ('전략 저장하기', 'AI에게 추천받기') */
+            /* 제출 버튼 컨테이너 */
+            .submit-button-container {
+                margin-top: 1.5rem;
+            }
             .submit-button-container .stButton button {
                 background: var(--primary-color) !important;
                 color: white !important;
@@ -355,9 +359,6 @@ elif st.session_state.menu == "🤖 AI 전략 코치":
 
 # 3. '명예의 전당' 메뉴
 elif st.session_state.menu == "🏆 명예의 전당":
-    # ================================================================== #
-    # ===== ✨ 여기가 수정된 명예의 전당 목록입니다 ✨ ===== #
-    # ================================================================== #
     athletes_data = [
         {'선수': '김연아', '종목': '피겨 스케이팅', '전략': '무슨 일이 있더라도, 내가 할 수 있는 것에만 집중하고 최선을 다할 뿐이다.'},
         {'선수': '마이클 조던', '종목': '농구', '전략': '한계에 부딪히더라도, 그건 환상일 뿐이다.'},
