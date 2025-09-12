@@ -30,6 +30,7 @@ def apply_ui_styles():
             
             :root {
                 --primary-color: #2BA7D1;
+                --primary-color-hover: #2596BC;
                 --black-color: #0D1628;
                 --secondary-color: #86929A;
                 --divider-color: #F1F1F1;
@@ -62,6 +63,7 @@ def apply_ui_styles():
                 background: var(--icon-bg-color); 
                 border-radius: 50%;
                 display: flex; justify-content: center; align-items: center;
+                flex-shrink: 0;
             }
             .icon-container img { width: 52px; height: 52px; display: block; object-fit: contain; }
             .title-group { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
@@ -87,9 +89,14 @@ def apply_ui_styles():
 
             /* 제출/실행 버튼 */
             .submit-button-container { width: 100%; margin-top: 20px; }
-            .submit-button-container .stButton button {
-                background: var(--primary-color) !important; color: white !important; border-radius: 12px !important; padding: 14px 0 !important; font-size: 14px !important; font-weight: 700 !important; border: none !important; box-shadow: 0px 5px 10px rgba(26, 26, 26, 0.10); }
-            .submit-button-container .stButton button:hover { background: #2596BC !important; }
+            .submit-button-container .stButton > button {
+                width: 100% !important;
+                background: linear-gradient(135deg, rgba(98, 120, 246, 0.20) 0%, rgba(29, 48, 78, 0) 100%), var(--primary-color) !important;
+                color: white !important; font-size: 14px !important; font-weight: 400 !important; line-height: 20px !important; padding: 14px 0 !important;
+                border-radius: 12px !important; box-shadow: 0px 5px 10px rgba(26, 26, 26, 0.10) !important; border: none !important;
+            }
+            .submit-button-container .stButton > button:hover {
+                background: var(--primary-color-hover) !important; box-shadow: 0px 2px 8px rgba(26, 26, 26, 0.10) !important; }
 
             /* 목록 */
             .list-container { margin-top: 40px; }
@@ -105,6 +112,21 @@ def apply_ui_styles():
             /* 명예의 전당 카드 */
             .hall-of-fame-card {
                 background-color: white; border: 1px solid var(--divider-color); border-radius: 12px; padding: 1rem 1.2rem; margin-bottom: 1rem;}
+
+            /* ================================================================== */
+            /* ===== ✨ 반응형 디자인 (모바일 화면) ✨ ===== */
+            /* ================================================================== */
+            @media (max-width: 640px) {
+                div.block-container { padding: 1rem 1rem 2rem 1rem !important; }
+                .main-title { font-size: 18px; }
+                .main-subtitle { font-size: 12px; }
+                .input-label { font-size: 16px; }
+                .list-header .title { font-size: 16px; }
+                .header-group {
+                    flex-direction: row; /* 모바일에서는 아이콘과 제목을 가로로 배열 */
+                    align-items: center;
+                }
+            }
 
         </style>
     """, unsafe_allow_html=True)
@@ -168,7 +190,7 @@ if st.session_state.menu == "✍️ 나의 큰틀전략":
         st.markdown('</div>', unsafe_allow_html=True)
         
         st.markdown('<div class="submit-button-container">', unsafe_allow_html=True)
-        submitted = st.form_submit_button("전략 저장하기", use_container_width=True)
+        submitted = st.form_submit_button("전략 저장하기")
         st.markdown('</div>', unsafe_allow_html=True)
 
         if submitted and st.session_state.get("user_name") and st.session_state.get("user_strategy"):
@@ -205,26 +227,15 @@ elif st.session_state.menu == "🤖 AI 전략 코치":
 
         # --- 추천받기 버튼 ---
         st.markdown('<div class="submit-button-container">', unsafe_allow_html=True)
-        if st.button("AI에게 추천받기", use_container_width=True): 
+        if st.button("AI에게 추천받기"): 
             if user_prompt:
                 with st.spinner('AI 코치가 당신만을 위한 전략을 구상 중입니다...'):
                     try:
                         model = genai.GenerativeModel('gemini-1.5-flash')
-
-                        # ================================================================== #
-                        # ===== ✨ 여기가 수정된 프롬프트입니다 ✨ ===== #
-                        # ================================================================== #
                         prompt = f"""
-                        You are a world-class performance psychologist who creates 'Big-Picture Strategies' (큰틀전략) for athletes.
-                        An athlete is facing this situation: '{user_prompt}'.
-
-                        Generate THREE completely different 'Big-Picture Strategies' for them in KOREAN.
-                        Each strategy must come from a unique psychological angle (e.g., cognitive reframing, behavioral focus, mindfulness, motivational, process-oriented).
-
-                        For each strategy, provide:
-                        - **[전략]**: The core strategy phrase.
-                        - **[해설]**: A detailed and helpful explanation of about 3-4 sentences. Explain the psychological principle behind the strategy and how the athlete can apply it in their situation.
-
+                        You are a world-class performance psychologist who creates 'Big-Picture Strategies' (큰틀전략) for athletes. An athlete is facing this situation: '{user_prompt}'.
+                        Generate THREE completely different 'Big-Picture Strategies' for them in KOREAN. Each strategy must come from a unique psychological angle.
+                        For each strategy, provide: - **[전략]**: The core strategy phrase. - **[해설]**: A detailed and helpful explanation of about 3-4 sentences. Explain the psychological principle behind the strategy and how the athlete can apply it in their situation.
                         Format the output exactly like this, separating each with '---':
                         [전략]: (Strategy in Korean)
                         [해설]: (Detailed explanation in Korean)
@@ -234,7 +245,6 @@ elif st.session_state.menu == "🤖 AI 전략 코치":
                         response = model.generate_content(prompt)
                         st.session_state.ai_strategies = []
                         text_out = getattr(response, "text", None) or ""
-                        
                         for block in text_out.split('---'):
                             if '[전략]:' in block and '[해설]:' in block:
                                 strategy = block.split('[전략]:')[1].split('[해설]:')[0].strip()
