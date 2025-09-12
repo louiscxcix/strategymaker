@@ -58,13 +58,7 @@ def apply_ui_styles():
             /* 헤더 */
             .header-group { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; margin-bottom: 20px; }
             .icon-container { 
-                width: 68px; height: 68px;
-                padding: 8px; 
-                background: var(--icon-bg-color); 
-                border-radius: 50%;
-                display: flex; justify-content: center; align-items: center;
-                flex-shrink: 0;
-            }
+                width: 68px; height: 68px; padding: 8px; background: var(--icon-bg-color); border-radius: 50%; display: flex; justify-content: center; align-items: center; flex-shrink: 0; }
             .icon-container img { width: 52px; height: 52px; display: block; object-fit: contain; }
             .title-group { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
             .main-title { font-size: 20px; font-weight: 700; line-height: 32px; color: var(--black-color) !important; }
@@ -86,17 +80,34 @@ def apply_ui_styles():
             .stTextInput input, .stTextArea textarea {
                 background-color: white !important; border: 1px solid var(--divider-color) !important; border-radius: 12px !important; color: var(--black-color) !important; }
             .stTextArea textarea { min-height: 81px; }
-
-            /* 제출/실행 버튼 */
+            
+            /* ================================================================== */
+            /* ===== ✨ 여기가 수정된 버튼 스타일입니다 ✨ ===== */
+            /* ================================================================== */
             .submit-button-container { width: 100%; margin-top: 20px; }
-            .submit-button-container .stButton > button {
+            .submit-button-container .stButton > button,
+            .submit-button-container .stButton > button:hover,
+            .submit-button-container .stButton > button:active,
+            .submit-button-container .stButton > button:focus {
+                display: inline-flex !important;
+                justify-content: center !important;
+                align-items: center !important;
                 width: 100% !important;
-                background: linear-gradient(135deg, rgba(98, 120, 246, 0.20) 0%, rgba(29, 48, 78, 0) 100%), var(--primary-color) !important;
-                color: white !important; font-size: 14px !important; font-weight: 400 !important; line-height: 20px !important; padding: 14px 0 !important;
-                border-radius: 12px !important; box-shadow: 0px 5px 10px rgba(26, 26, 26, 0.10) !important; border: none !important;
+                padding: 14px 36px !important;
+                font-size: 14px !important;
+                font-weight: 400 !important;
+                line-height: 20px !important;
+                color: white !important;
+                background: linear-gradient(135deg, rgba(98, 120.20, 246, 0.20) 0%, rgba(29, 48, 78, 0) 100%), var(--primary-color) !important;
+                border-radius: 12px !important;
+                box-shadow: 0px 5px 10px rgba(26, 26, 26, 0.10) !important;
+                border: none !important;
             }
             .submit-button-container .stButton > button:hover {
-                background: var(--primary-color-hover) !important; box-shadow: 0px 2px 8px rgba(26, 26, 26, 0.10) !important; }
+                background: linear-gradient(135deg, rgba(98, 120, 246, 0.20) 0%, rgba(29, 48, 78, 0) 100%), var(--primary-color-hover) !important;
+                box-shadow: 0px 2px 8px rgba(26, 26, 26, 0.10) !important;
+            }
+            /* ================================================================== */
 
             /* 목록 */
             .list-container { margin-top: 40px; }
@@ -113,21 +124,15 @@ def apply_ui_styles():
             .hall-of-fame-card {
                 background-color: white; border: 1px solid var(--divider-color); border-radius: 12px; padding: 1rem 1.2rem; margin-bottom: 1rem;}
 
-            /* ================================================================== */
-            /* ===== ✨ 반응형 디자인 (모바일 화면) ✨ ===== */
-            /* ================================================================== */
+            /* 반응형 디자인 */
             @media (max-width: 640px) {
                 div.block-container { padding: 1rem 1rem 2rem 1rem !important; }
                 .main-title { font-size: 18px; }
                 .main-subtitle { font-size: 12px; }
                 .input-label { font-size: 16px; }
                 .list-header .title { font-size: 16px; }
-                .header-group {
-                    flex-direction: row; /* 모바일에서는 아이콘과 제목을 가로로 배열 */
-                    align-items: center;
-                }
+                .header-group { flex-direction: row; align-items: center; }
             }
-
         </style>
     """, unsafe_allow_html=True)
 
