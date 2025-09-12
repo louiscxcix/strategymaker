@@ -3,6 +3,7 @@ import pandas as pd
 import google.generativeai as genai
 import base64
 from pathlib import Path
+import streamlit.components.v1 as components
 
 # --- 페이지 기본 설정 ---
 st.set_page_config(
@@ -81,36 +82,6 @@ def apply_ui_styles():
                 background-color: white !important; border: 1px solid var(--divider-color) !important; border-radius: 12px !important; color: var(--black-color) !important; }
             .stTextArea textarea { min-height: 81px; }
             
-            /* ================================================================== */
-            /* ===== ✨ 버튼 스타일 강제 적용 (최종 수정) ✨ ===== */
-            /* ================================================================== */
-            
-            /* '전략 저장하기' 폼 제출 버튼과 'AI에게 추천받기' 일반 버튼에 공통 스타일 적용 */
-            div[data-testid="stForm"] button[type="submit"],
-            .ai-button-container .stButton > button {
-                display: flex !important;
-                justify-content: center !important;
-                align-items: center !important;
-                width: 100% !important;
-                padding: 14px 36px !important;
-                font-size: 14px !important;
-                font-weight: 400 !important;
-                color: white !important;
-                background: linear-gradient(135deg, rgba(98, 120, 246, 0.20) 0%, rgba(29, 48, 78, 0) 100%), var(--primary-color) !important;
-                border-radius: 12px !important;
-                box-shadow: 0px 5px 10px rgba(26, 26, 26, 0.10) !important;
-                border: none !important;
-            }
-
-            /* 버튼 호버 효과 */
-            div[data-testid="stForm"] button[type="submit"]:hover,
-            .ai-button-container .stButton > button:hover {
-                color: white !important;
-                background: var(--primary-color-hover) !important;
-                box-shadow: 0px 2px 8px rgba(26, 26, 26, 0.10) !important;
-            }
-            /* ================================================================== */
-
             /* 목록 */
             .list-container { margin-top: 40px; }
             .list-header { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; }
@@ -125,7 +96,12 @@ def apply_ui_styles():
             /* 명예의 전당 카드 */
             .hall-of-fame-card {
                 background-color: white; border: 1px solid var(--divider-color); border-radius: 12px; padding: 1rem 1.2rem; margin-bottom: 1rem;}
-
+            
+            /* ✨ 진짜 Streamlit 버튼을 숨기기 위한 스타일 */
+            .hidden-button {
+                display: none !important;
+            }
+            
             /* 반응형 디자인 */
             @media (max-width: 640px) {
                 div.block-container { padding: 1rem 1rem 2rem 1rem !important; }
@@ -181,6 +157,19 @@ for i, item in enumerate(menu_items):
             on_click=set_menu, args=(item,)
         )
 
+# --- HTML/JS로 만든 커스텀 버튼 스타일 ---
+button_html_style = """
+    display: flex; justify-content: center; align-items: center; width: 100%;
+    padding: 14px 36px; font-size: 14px; font-weight: 400; color: white;
+    background: linear-gradient(135deg, rgba(98, 120, 246, 0.20) 0%, rgba(29, 48, 78, 0) 100%), #2BA7D1;
+    border-radius: 12px; box-shadow: 0px 5px 10px rgba(26, 26, 26, 0.10);
+    border: none; cursor: pointer; transition: all 0.2s ease;
+"""
+button_html_style_hover = """
+    background: linear-gradient(135deg, rgba(98, 120, 246, 0.20) 0%, rgba(29, 48, 78, 0) 100%), #2596BC;
+    box-shadow: 0px 2px 8px rgba(26, 26, 26, 0.10);
+"""
+
 # --- 메인 화면 로직 ---
 
 # 1. '나의 큰틀전략' 메뉴
@@ -196,8 +185,33 @@ if st.session_state.menu == "✍️ 나의 큰틀전략":
         st.text_area("user_strategy_input", key="user_strategy", placeholder="나만의 다짐이나 전략을 적어보세요", label_visibility="collapsed")
         st.markdown('</div>', unsafe_allow_html=True)
         
-        # 폼 제출 버튼 (컨테이너 없이 직접 호출)
-        submitted = st.form_submit_button("전략 저장하기")
+        st.markdown(f"""
+            <button id="custom-form-submit" 
+                    style="{button_html_style}" 
+                    onmouseover="this.style.cssText = `{button_html_style} {button_html_style_hover}`" 
+                    onmouseout="this.style.cssText = `{button_html_style}`">
+                전략 저장하기
+            </button>
+        """, unsafe_allow_html=True)
+
+        st.markdown('<div class="hidden-button">', unsafe_allow_html=True)
+        submitted = st.form_submit_button("Submit")
+        st.markdown('</div>', unsafe_allow_html=True)
+        
+        components.html(
+            """
+            <script>
+                const customBtn = document.getElementById('custom-form-submit');
+                const realSubmitBtn = window.parent.document.querySelector('div[data-testid="stForm"] button[type="submit"]');
+                if (customBtn && realSubmitBtn) {
+                    customBtn.onclick = function() {
+                        realSubmitBtn.click();
+                    }
+                }
+            </script>
+            """,
+            height=0, width=0
+        )
 
         if submitted and st.session_state.get("user_name") and st.session_state.get("user_strategy"):
             new_data = pd.DataFrame({'이름': [st.session_state.user_name], '큰틀전략': [st.session_state.user_strategy]})
@@ -225,15 +239,39 @@ elif st.session_state.menu == "🤖 AI 전략 코치":
     if not api_key_configured:
         st.error("AI 코치 기능을 사용하기 위한 API 키가 설정되지 않았습니다.")
     else:
-        # --- AI 코치 입력 섹션 ---
         st.markdown('<div class="form-section">', unsafe_allow_html=True)
         st.markdown('<div><p class="input-label light">AI에게 상황을 말하고 코칭을 받아보세요</p><p class="input-label"><strong>어떤 상황인가요?</strong></p></div>', unsafe_allow_html=True)
         user_prompt = st.text_area("ai_prompt_input", height=100, placeholder="예: 너무 긴장돼요, 자신감이 떨어졌어요", label_visibility="collapsed")
         st.markdown('</div>', unsafe_allow_html=True)
+        
+        st.markdown(f"""
+            <button id="custom-ai-submit" 
+                    style="{button_html_style}"
+                    onmouseover="this.style.cssText = `{button_html_style} {button_html_style_hover}`" 
+                    onmouseout="this.style.cssText = `{button_html_style}`">
+                AI에게 추천받기
+            </button>
+        """, unsafe_allow_html=True)
+        
+        st.markdown('<div class="hidden-button" id="real-ai-button-wrapper">', unsafe_allow_html=True)
+        ai_button_clicked = st.button("AI 추천", key="real_ai_button")
+        st.markdown('</div>', unsafe_allow_html=True)
 
-        # --- 추천받기 버튼 ---
-        st.markdown('<div class="ai-button-container">', unsafe_allow_html=True)
-        if st.button("AI에게 추천받기"): 
+        components.html("""
+            <script>
+            // Streamlit은 iframe에서 실행되므로, 부모 창에서 실제 버튼을 찾아야 합니다.
+            // 안정적인 선택을 위해 래퍼 ID를 사용합니다.
+            const realAiButton = window.parent.document.querySelector('#real-ai-button-wrapper button');
+            const customAiButton = document.getElementById('custom-ai-submit');
+            if (customAiButton && realAiButton) {
+                customAiButton.onclick = function() {
+                    realAiButton.click();
+                }
+            }
+            </script>
+        """, height=0, width=0)
+
+        if ai_button_clicked: 
             if user_prompt:
                 with st.spinner('AI 코치가 당신만을 위한 전략을 구상 중입니다...'):
                     try:
@@ -260,9 +298,7 @@ elif st.session_state.menu == "🤖 AI 전략 코치":
                         st.error(f"AI 호출 중 오류가 발생했습니다: {e}")
             else:
                 st.warning("현재 상황을 입력해주세요.")
-        st.markdown('</div>', unsafe_allow_html=True)
     
-    # --- AI 코치 추천 목록 ---
     if st.session_state.ai_strategies:
         st.markdown('<div class="list-container">', unsafe_allow_html=True)
         st.markdown('<div class="list-header"><p class="label">큰틀전략</p><p class="title">AI 코치의 큰틀전략</p></div>', unsafe_allow_html=True)
@@ -272,7 +308,6 @@ elif st.session_state.menu == "🤖 AI 전략 코치":
             st.caption(item['explanation'])
             st.markdown('</div>', unsafe_allow_html=True)
         st.markdown('</div>', unsafe_allow_html=True)
-
 
 # 3. '명예의 전당' 메뉴
 elif st.session_state.menu == "🏆 명예의 전당":
