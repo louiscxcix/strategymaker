@@ -237,6 +237,9 @@ if st.session_state.menu == "✍️ 나의 큰틀전략":
         )
         st.markdown("</div>", unsafe_allow_html=True)
 
+        # margin-top 20px
+        st.markdown("<div style='margin-top: 20px;'></div>", unsafe_allow_html=True)
+
         # ✨ 수정: 버튼을 폼의 일부로 직접 호출
         submitted = st.form_submit_button("전략 저장하기", use_container_width=True)
 
