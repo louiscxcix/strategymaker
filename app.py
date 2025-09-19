@@ -93,31 +93,34 @@ def apply_ui_styles():
             div[data-testid="stForm"] button[type="submit"],
             .styled-button-container .stButton button {
                 width: 100%;
-                padding: 14px 0 !important;
-                font-size: 14px !important;
-                font-weight: 400 !important;
+                padding: 16px 0 !important;
+                font-size: 16px !important;
+                font-weight: 600 !important;
                 line-height: 20px !important;
                 color: white !important;
-                background: linear-gradient(135deg, rgba(98, 120, 246, 0.20) 0%, rgba(29, 48, 78, 0) 100%), var(--primary-color) !important;
-                border: none !important;
-                border-radius: 12px !important;
-                box-shadow: 0px 5px 10px rgba(26, 26, 26, 0.10) !important;
-                transition: all 0.2s ease !important;
+                background: linear-gradient(135deg, #4A90E2 0%, #357ABD 100%) !important;
+                border: 2px solid #357ABD !important;
+                border-radius: 16px !important;
+                box-shadow: 0px 4px 12px rgba(74, 144, 226, 0.3) !important;
+                transition: all 0.3s ease !important;
+                margin-top: 20px !important;
             }
 
             /* 버튼 호버(마우스 올렸을 때) 효과 */
             div[data-testid="stForm"] button[type="submit"]:hover,
             .styled-button-container .stButton button:hover {
                 color: white !important;
-                background: var(--primary-color-hover) !important;
-                box-shadow: 0px 2px 8px rgba(26, 26, 26, 0.10) !important;
+                background: linear-gradient(135deg, #357ABD 0%, #2968AA 100%) !important;
+                border: 2px solid #2968AA !important;
+                box-shadow: 0px 6px 16px rgba(74, 144, 226, 0.4) !important;
+                transform: translateY(-2px) !important;
             }
 
             /* 버튼 포커스(클릭 또는 Tab으로 선택 시) 효과 - 기본 테두리 제거 */
             div[data-testid="stForm"] button[type="submit"]:focus,
             .styled-button-container .stButton button:focus {
                 outline: none !important;
-                box-shadow: 0px 5px 10px rgba(26, 26, 26, 0.10) !important;
+                box-shadow: 0px 6px 16px rgba(74, 144, 226, 0.4) !important;
             }
             /* ================================================================== */
 
