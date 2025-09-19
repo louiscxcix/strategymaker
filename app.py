@@ -1,16 +1,19 @@
-import streamlit as st
-import pandas as pd
-import google.generativeai as genai
 import base64
+import os
 from pathlib import Path
+
+import google.generativeai as genai
+import pandas as pd
+import streamlit as st
 
 # --- 페이지 기본 설정 ---
 st.set_page_config(
     page_title="큰틀전략 메이커",
     page_icon="🧠",
     layout="centered",
-    initial_sidebar_state="collapsed"
+    initial_sidebar_state="collapsed",
 )
+
 
 # --- 이미지 파일을 Base64로 인코딩하는 함수 ---
 def img_to_base_64(image_path):
@@ -21,10 +24,12 @@ def img_to_base_64(image_path):
     except FileNotFoundError:
         return None
 
+
 # --- UI 스타일 적용 함수 ---
 def apply_ui_styles():
     """앱 전체에 적용될 CSS 스타일을 정의합니다."""
-    st.markdown("""
+    st.markdown(
+        """
         <style>
             @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap');
             
@@ -141,22 +146,25 @@ def apply_ui_styles():
                 .header-group { flex-direction: row; align-items: center; }
             }
         </style>
-    """, unsafe_allow_html=True)
+    """,
+        unsafe_allow_html=True,
+    )
+
 
 # --- Streamlit Secrets에서 API 키 가져오기 ---
 try:
-    GEMINI_API_KEY = st.secrets["GEMINI_API_KEY"]
+    GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
     genai.configure(api_key=GEMINI_API_KEY)
     api_key_configured = True
 except (KeyError, AttributeError):
     api_key_configured = False
 
 # --- 데이터 및 상태 초기화 ---
-if 'menu' not in st.session_state:
+if "menu" not in st.session_state:
     st.session_state.menu = "✍️ 나의 큰틀전략"
-if 'my_strategies' not in st.session_state:
-    st.session_state.my_strategies = pd.DataFrame(columns=['이름', '큰틀전략'])
-if 'ai_strategies' not in st.session_state:
+if "my_strategies" not in st.session_state:
+    st.session_state.my_strategies = pd.DataFrame(columns=["이름", "큰틀전략"])
+if "ai_strategies" not in st.session_state:
     st.session_state.ai_strategies = []
 
 # --- UI 렌더링 시작 ---
@@ -168,22 +176,33 @@ icon_base_64 = img_to_base_64(str(icon_path))
 
 st.markdown('<div class="header-group">', unsafe_allow_html=True)
 if icon_base_64:
-    st.markdown(f'<div class="icon-container"><img src="data:image/png;base64,{icon_base_64}" alt="App Icon"></div>', unsafe_allow_html=True)
-st.markdown('<div class="title-group"><p class="main-title">큰틀전략</p><p class="main-subtitle">나만의 다짐을 기록하고, AI에게 영감을 얻고,<br>레전드에게 배우는 멘탈 관리</p></div>', unsafe_allow_html=True)
-st.markdown('</div>', unsafe_allow_html=True)
+    st.markdown(
+        f'<div class="icon-container"><img src="data:image/png;base64,{icon_base_64}" alt="App Icon"></div>',
+        unsafe_allow_html=True,
+    )
+st.markdown(
+    '<div class="title-group"><p class="main-title">큰틀전략</p><p class="main-subtitle">나만의 다짐을 기록하고, AI에게 영감을 얻고,<br>레전드에게 배우는 멘탈 관리</p></div>',
+    unsafe_allow_html=True,
+)
+st.markdown("</div>", unsafe_allow_html=True)
+
 
 # --- 상단 메뉴 UI ---
 def set_menu(menu_selection):
     st.session_state.menu = menu_selection
+
 
 cols = st.columns(3)
 menu_items = ["✍️ 나의 큰틀전략", "🤖 AI 전략 코치", "🏆 명예의 전당"]
 for i, item in enumerate(menu_items):
     with cols[i]:
         st.button(
-            item, key=f"button_{i}", use_container_width=True,
+            item,
+            key=f"button_{i}",
+            use_container_width=True,
             type="primary" if st.session_state.menu == item else "secondary",
-            on_click=set_menu, args=(item,)
+            on_click=set_menu,
+            args=(item,),
         )
 
 # --- 메인 화면 로직 ---
@@ -192,26 +211,54 @@ for i, item in enumerate(menu_items):
 if st.session_state.menu == "✍️ 나의 큰틀전략":
     with st.form("my_strategy_form"):
         st.markdown('<div class="form-section">', unsafe_allow_html=True)
-        st.markdown('<p class="input-label">이름 (또는 이니셜)</p>', unsafe_allow_html=True)
-        st.text_input("user_name_input", key="user_name", placeholder="이름을 입력하세요", label_visibility="collapsed")
-        st.markdown('</div>', unsafe_allow_html=True)
+        st.markdown(
+            '<p class="input-label">이름 (또는 이니셜)</p>', unsafe_allow_html=True
+        )
+        st.text_input(
+            "user_name_input",
+            key="user_name",
+            placeholder="이름을 입력하세요",
+            label_visibility="collapsed",
+        )
+        st.markdown("</div>", unsafe_allow_html=True)
 
         st.markdown('<div class="form-section">', unsafe_allow_html=True)
-        st.markdown('<p class="input-label">나의 큰틀전략은?</p>', unsafe_allow_html=True)
-        st.text_area("user_strategy_input", key="user_strategy", placeholder="나만의 다짐이나 전략을 적어보세요", label_visibility="collapsed")
-        st.markdown('</div>', unsafe_allow_html=True)
-        
+        st.markdown(
+            '<p class="input-label">나의 큰틀전략은?</p>', unsafe_allow_html=True
+        )
+        st.text_area(
+            "user_strategy_input",
+            key="user_strategy",
+            placeholder="나만의 다짐이나 전략을 적어보세요",
+            label_visibility="collapsed",
+        )
+        st.markdown("</div>", unsafe_allow_html=True)
+
         # ✨ 수정: 버튼을 폼의 일부로 직접 호출
         submitted = st.form_submit_button("전략 저장하기", use_container_width=True)
 
-        if submitted and st.session_state.get("user_name") and st.session_state.get("user_strategy"):
-            new_data = pd.DataFrame({'이름': [st.session_state.user_name], '큰틀전략': [st.session_state.user_strategy]})
-            st.session_state.my_strategies = pd.concat([st.session_state.my_strategies, new_data], ignore_index=True)
+        if (
+            submitted
+            and st.session_state.get("user_name")
+            and st.session_state.get("user_strategy")
+        ):
+            new_data = pd.DataFrame(
+                {
+                    "이름": [st.session_state.user_name],
+                    "큰틀전략": [st.session_state.user_strategy],
+                }
+            )
+            st.session_state.my_strategies = pd.concat(
+                [st.session_state.my_strategies, new_data], ignore_index=True
+            )
             st.success("새로운 큰틀전략이 저장되었습니다!")
 
     if not st.session_state.my_strategies.empty:
         st.markdown('<div class="list-container">', unsafe_allow_html=True)
-        st.markdown('<div class="list-header"><p class="label">큰틀전략</p><p class="title">나의 큰틀전략 목록</p></div>', unsafe_allow_html=True)
+        st.markdown(
+            '<div class="list-header"><p class="label">큰틀전략</p><p class="title">나의 큰틀전략 목록</p></div>',
+            unsafe_allow_html=True,
+        )
         for index, row in reversed(list(st.session_state.my_strategies.iterrows())):
             st.markdown('<div class="strategy-item">', unsafe_allow_html=True)
             col1, col2 = st.columns([0.8, 0.2])
@@ -220,10 +267,14 @@ if st.session_state.menu == "✍️ 나의 큰틀전략":
                 st.write(f"**{row['큰틀전략']}**")
             with col2:
                 if st.button("삭제", key=f"delete_{index}", use_container_width=True):
-                    st.session_state.my_strategies = st.session_state.my_strategies.drop(index).reset_index(drop=True)
+                    st.session_state.my_strategies = (
+                        st.session_state.my_strategies.drop(index).reset_index(
+                            drop=True
+                        )
+                    )
                     st.rerun()
-            st.markdown('</div>', unsafe_allow_html=True)
-        st.markdown('</div>', unsafe_allow_html=True)
+            st.markdown("</div>", unsafe_allow_html=True)
+        st.markdown("</div>", unsafe_allow_html=True)
 
 # 2. 'AI 전략 코치' 메뉴
 elif st.session_state.menu == "🤖 AI 전략 코치":
@@ -231,20 +282,28 @@ elif st.session_state.menu == "🤖 AI 전략 코치":
         st.error("AI 코치 기능을 사용하기 위한 API 키가 설정되지 않았습니다.")
     else:
         st.markdown('<div class="form-section">', unsafe_allow_html=True)
-        st.markdown('<div><p class="input-label light">AI에게 상황을 말하고 코칭을 받아보세요</p><p class="input-label"><strong>어떤 상황인가요?</strong></p></div>', unsafe_allow_html=True)
-        user_prompt = st.text_area("ai_prompt_input", height=100, placeholder="예: 너무 긴장돼요, 자신감이 떨어졌어요", label_visibility="collapsed")
-        st.markdown('</div>', unsafe_allow_html=True)
-        
+        st.markdown(
+            '<div><p class="input-label light">AI에게 상황을 말하고 코칭을 받아보세요</p><p class="input-label"><strong>어떤 상황인가요?</strong></p></div>',
+            unsafe_allow_html=True,
+        )
+        user_prompt = st.text_area(
+            "ai_prompt_input",
+            height=100,
+            placeholder="예: 너무 긴장돼요, 자신감이 떨어졌어요",
+            label_visibility="collapsed",
+        )
+        st.markdown("</div>", unsafe_allow_html=True)
+
         # ✨ 수정: 버튼을 특정 컨테이너로 감싸서 CSS 적용
         st.markdown('<div class="styled-button-container">', unsafe_allow_html=True)
         ai_button_clicked = st.button("AI에게 추천받기", use_container_width=True)
-        st.markdown('</div>', unsafe_allow_html=True)
+        st.markdown("</div>", unsafe_allow_html=True)
 
-        if ai_button_clicked: 
+        if ai_button_clicked:
             if user_prompt:
-                with st.spinner('AI 코치가 당신만을 위한 전략을 구상 중입니다...'):
+                with st.spinner("AI 코치가 당신만을 위한 전략을 구상 중입니다..."):
                     try:
-                        model = genai.GenerativeModel('gemini-1.5-flash')
+                        model = genai.GenerativeModel("gemini-1.5-flash")
                         prompt = f"""
                         You are a world-class performance psychologist who creates 'Big-Picture Strategies' (큰틀전략) for athletes. An athlete is facing this situation: '{user_prompt}'.
                         Generate THREE completely different 'Big-Picture Strategies' for them in KOREAN. Each strategy must come from a unique psychological angle.
@@ -258,54 +317,118 @@ elif st.session_state.menu == "🤖 AI 전략 코치":
                         response = model.generate_content(prompt)
                         st.session_state.ai_strategies = []
                         text_out = getattr(response, "text", None) or ""
-                        for block in text_out.split('---'):
-                            if '[전략]:' in block and '[해설]:' in block:
-                                strategy = block.split('[전략]:')[1].split('[해설]:')[0].strip()
-                                explanation = block.split('[해설]:')[1].strip()
-                                st.session_state.ai_strategies.append({'strategy': strategy, 'explanation': explanation})
+                        for block in text_out.split("---"):
+                            if "[전략]:" in block and "[해설]:" in block:
+                                strategy = (
+                                    block.split("[전략]:")[1]
+                                    .split("[해설]:")[0]
+                                    .strip()
+                                )
+                                explanation = block.split("[해설]:")[1].strip()
+                                st.session_state.ai_strategies.append(
+                                    {"strategy": strategy, "explanation": explanation}
+                                )
                     except Exception as e:
                         st.error(f"AI 호출 중 오류가 발생했습니다: {e}")
             else:
                 st.warning("현재 상황을 입력해주세요.")
-    
+
     if st.session_state.ai_strategies:
         st.markdown('<div class="list-container">', unsafe_allow_html=True)
-        st.markdown('<div class="list-header"><p class="label">큰틀전략</p><p class="title">AI 코치의 큰틀전략</p></div>', unsafe_allow_html=True)
+        st.markdown(
+            '<div class="list-header"><p class="label">큰틀전략</p><p class="title">AI 코치의 큰틀전략</p></div>',
+            unsafe_allow_html=True,
+        )
         for item in st.session_state.ai_strategies:
             st.markdown('<div class="strategy-item">', unsafe_allow_html=True)
             st.markdown(f"##### 💡 {item['strategy']}")
-            st.caption(item['explanation'])
-            st.markdown('</div>', unsafe_allow_html=True)
-        st.markdown('</div>', unsafe_allow_html=True)
+            st.caption(item["explanation"])
+            st.markdown("</div>", unsafe_allow_html=True)
+        st.markdown("</div>", unsafe_allow_html=True)
 
 # 3. '명예의 전당' 메뉴
 elif st.session_state.menu == "🏆 명예의 전당":
     athletes_data = [
-        {'선수': '김연아', '종목': '피겨 스케이팅', '전략': '무슨 일이 있더라도, 내가 할 수 있는 것에만 집중하고 최선을 다할 뿐이다.'},
-        {'선수': '마이클 조던', '종목': '농구', '전략': '한계에 부딪히더라도, 그건 환상일 뿐이다.'},
-        {'선수': '박지성', '종목': '축구', '전략': '쓰러질지언정 무릎은 꿇지 않는다.'},
-        {'선수': '손흥민', '종목': '축구', '전략': '어제의 기쁨은 어제로 끝내고, 새로운 날을 준비한다.'},
-        {'선수': '이상혁 \'페이커\'', '종목': 'e스포츠', '전략': '방심하지 않고, 이기든 지든 내 플레이를 하자.'},
-        {'선수': '박태환', '종목': '수영', '전략': '심장이 터질 것 같아도, 포기하지 않으면 내일이 온다.'},
-        {'선수': '장미란', '종목': '역도', '전략': '들 수 없는 바벨은 없다. 내가 들지 못했을 뿐이다.'},
-        {'선수': '류현진', '종목': '야구', '전략': '마운드 위에서는 내가 최고라는 생각으로 던진다.'},
-        {'선수': '김자인', '종목': '클라이밍', '전략': '가장 높은 곳을 향한 두려움은, 오직 내 안의 작은 속삭임일 뿐이다.'},
-        {'선수': '리오넬 메시', '종목': '축구', '전략': '오늘의 노력이 내일의 나를 만든다.'},
-        {'선수': '타이거 우즈', '종목': '골프', '전략': '아무리 힘들어도, 나는 항상 이길 수 있다고 믿는다.'},
-        {'선수': '우사인 볼트', '종목': '육상', '전략': '나는 한계를 생각하지 않는다. 그저 달릴 뿐이다.'},
-        {'선수': '세레나 윌리엄스', '종목': '테니스', '전략': '나는 다른 사람의 의견으로 나를 정의하지 않는다.'},
+        {
+            "선수": "김연아",
+            "종목": "피겨 스케이팅",
+            "전략": "무슨 일이 있더라도, 내가 할 수 있는 것에만 집중하고 최선을 다할 뿐이다.",
+        },
+        {
+            "선수": "마이클 조던",
+            "종목": "농구",
+            "전략": "한계에 부딪히더라도, 그건 환상일 뿐이다.",
+        },
+        {"선수": "박지성", "종목": "축구", "전략": "쓰러질지언정 무릎은 꿇지 않는다."},
+        {
+            "선수": "손흥민",
+            "종목": "축구",
+            "전략": "어제의 기쁨은 어제로 끝내고, 새로운 날을 준비한다.",
+        },
+        {
+            "선수": "이상혁 '페이커'",
+            "종목": "e스포츠",
+            "전략": "방심하지 않고, 이기든 지든 내 플레이를 하자.",
+        },
+        {
+            "선수": "박태환",
+            "종목": "수영",
+            "전략": "심장이 터질 것 같아도, 포기하지 않으면 내일이 온다.",
+        },
+        {
+            "선수": "장미란",
+            "종목": "역도",
+            "전략": "들 수 없는 바벨은 없다. 내가 들지 못했을 뿐이다.",
+        },
+        {
+            "선수": "류현진",
+            "종목": "야구",
+            "전략": "마운드 위에서는 내가 최고라는 생각으로 던진다.",
+        },
+        {
+            "선수": "김자인",
+            "종목": "클라이밍",
+            "전략": "가장 높은 곳을 향한 두려움은, 오직 내 안의 작은 속삭임일 뿐이다.",
+        },
+        {
+            "선수": "리오넬 메시",
+            "종목": "축구",
+            "전략": "오늘의 노력이 내일의 나를 만든다.",
+        },
+        {
+            "선수": "타이거 우즈",
+            "종목": "골프",
+            "전략": "아무리 힘들어도, 나는 항상 이길 수 있다고 믿는다.",
+        },
+        {
+            "선수": "우사인 볼트",
+            "종목": "육상",
+            "전략": "나는 한계를 생각하지 않는다. 그저 달릴 뿐이다.",
+        },
+        {
+            "선수": "세레나 윌리엄스",
+            "종목": "테니스",
+            "전략": "나는 다른 사람의 의견으로 나를 정의하지 않는다.",
+        },
     ]
     df_athletes = pd.DataFrame(athletes_data)
-    
-    sports = ['모두 보기'] + sorted(df_athletes['종목'].unique())
-    selected_sport = st.selectbox('종목별로 보기', sports, label_visibility="collapsed")
 
-    filtered_df = df_athletes if selected_sport == '모두 보기' else df_athletes[df_athletes['종목'] == selected_sport]
+    sports = ["모두 보기"] + sorted(df_athletes["종목"].unique())
+    selected_sport = st.selectbox("종목별로 보기", sports, label_visibility="collapsed")
+
+    filtered_df = (
+        df_athletes
+        if selected_sport == "모두 보기"
+        else df_athletes[df_athletes["종목"] == selected_sport]
+    )
 
     for index, row in filtered_df.iterrows():
-        st.markdown(f"""
+        st.markdown(
+            f"""
         <div class="hall-of-fame-card">
-            <p style="font-size: 14px; color: var(--primary-color); font-weight: 700;">{row['선수']} <span style="font-size: 12px; color: var(--secondary-color); font-weight: 400;">({row['종목']})</span></p>
-            <p style="font-size: 16px; color: var(--black-color); margin-top: 8px;">"{row['전략']}"</p>
+            <p style="font-size: 14px; color: var(--primary-color); font-weight: 700;">{row["선수"]} <span style="font-size: 12px; color: var(--secondary-color); font-weight: 400;">({row["종목"]})</span></p>
+            <p style="font-size: 16px; color: var(--black-color); margin-top: 8px;">"{row["전략"]}"</p>
         </div>
-        """, unsafe_allow_html=True)
+        """,
+            unsafe_allow_html=True,
+        )
