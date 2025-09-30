@@ -87,40 +87,58 @@ def apply_ui_styles():
             .stTextArea textarea { min-height: 81px; }
             
             /* ================================================================== */
-            /* ===== ✨ 버튼 스타일 최종 수정 (강제 적용) ✨ ===== */
+            /* ===== ✨ 버튼 스타일 - Figma Design (강제 적용) ✨ ===== */
             /* ================================================================== */
             /* '전략 저장하기' (폼 제출) 버튼과 'AI 추천' 버튼에 대한 공통 스타일 */
             div[data-testid="stForm"] button[type="submit"],
-            .styled-button-container .stButton button {
-                width: 100%;
-                padding: 16px 0 !important;
-                font-size: 16px !important;
-                font-weight: 600 !important;
+            div[data-testid="stForm"] button[kind="primaryFormSubmit"],
+            .stForm button[type="submit"],
+            button[kind="primaryFormSubmit"],
+            .styled-button-container .stButton button,
+            .styled-button-container button {
+                width: 100% !important;
+                padding: 14px 36px !important;
+                font-size: 14px !important;
+                font-weight: 400 !important;
                 line-height: 20px !important;
                 color: white !important;
-                background: linear-gradient(135deg, #4A90E2 0%, #357ABD 100%) !important;
-                border: 2px solid #357ABD !important;
-                border-radius: 16px !important;
-                box-shadow: 0px 4px 12px rgba(74, 144, 226, 0.3) !important;
+                background-color: #2BA7D1 !important;
+                background-image: linear-gradient(135deg, rgba(98, 120.20, 246, 0.20) 0%, rgba(29, 48, 78, 0) 100%) !important;
+                background: linear-gradient(135deg, rgba(98, 120.20, 246, 0.20) 0%, rgba(29, 48, 78, 0) 100%), #2BA7D1 !important;
+                border: none !important;
+                border-radius: 12px !important;
+                box-shadow: 0px 5px 10px rgba(26, 26, 26, 0.10) !important;
                 transition: all 0.3s ease !important;
                 margin-top: 20px !important;
             }
 
             /* 버튼 호버(마우스 올렸을 때) 효과 */
             div[data-testid="stForm"] button[type="submit"]:hover,
-            .styled-button-container .stButton button:hover {
+            div[data-testid="stForm"] button[kind="primaryFormSubmit"]:hover,
+            .stForm button[type="submit"]:hover,
+            button[kind="primaryFormSubmit"]:hover,
+            .styled-button-container .stButton button:hover,
+            .styled-button-container button:hover {
                 color: white !important;
-                background: linear-gradient(135deg, #357ABD 0%, #2968AA 100%) !important;
-                border: 2px solid #2968AA !important;
-                box-shadow: 0px 6px 16px rgba(74, 144, 226, 0.4) !important;
+                background-color: #1A8BB0 !important;
+                background-image: linear-gradient(135deg, rgba(98, 120.20, 246, 0.30) 0%, rgba(29, 48, 78, 0) 100%) !important;
+                background: linear-gradient(135deg, rgba(98, 120.20, 246, 0.30) 0%, rgba(29, 48, 78, 0) 100%), #1A8BB0 !important;
+                border: none !important;
+                box-shadow: 0px 6px 14px rgba(26, 26, 26, 0.15) !important;
                 transform: translateY(-2px) !important;
             }
 
             /* 버튼 포커스(클릭 또는 Tab으로 선택 시) 효과 - 기본 테두리 제거 */
             div[data-testid="stForm"] button[type="submit"]:focus,
-            .styled-button-container .stButton button:focus {
+            div[data-testid="stForm"] button[kind="primaryFormSubmit"]:focus,
+            .stForm button[type="submit"]:focus,
+            button[kind="primaryFormSubmit"]:focus,
+            .styled-button-container .stButton button:focus,
+            .styled-button-container button:focus {
                 outline: none !important;
-                box-shadow: 0px 6px 16px rgba(74, 144, 226, 0.4) !important;
+                box-shadow: 0px 6px 14px rgba(26, 26, 26, 0.15) !important;
+                background-color: #2BA7D1 !important;
+                background: linear-gradient(135deg, rgba(98, 120.20, 246, 0.20) 0%, rgba(29, 48, 78, 0) 100%), #2BA7D1 !important;
             }
             /* ================================================================== */
 
@@ -309,7 +327,7 @@ elif st.session_state.menu == "🤖 AI 전략 코치":
             if user_prompt:
                 with st.spinner("AI 코치가 당신만을 위한 전략을 구상 중입니다..."):
                     try:
-                        model = genai.GenerativeModel("gemini-1.5-flash")
+                        model = genai.GenerativeModel("gemini-2.0-flash")
                         prompt = f"""
                         You are a world-class performance psychologist who creates 'Big-Picture Strategies' (큰틀전략) for athletes. An athlete is facing this situation: '{user_prompt}'.
                         Generate THREE completely different 'Big-Picture Strategies' for them in KOREAN. Each strategy must come from a unique psychological angle.
