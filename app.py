@@ -91,9 +91,9 @@ def apply_ui_styles():
             /* ================================================================== */
             /* '전략 저장하기' (폼 제출) 버튼과 'AI 추천' 버튼에 대한 공통 스타일 */
             div[data-testid="stForm"] button[type="submit"],
-            div[data-testid="stForm"] button[kind="primaryFormSubmit"],
+            div[data-testid="stForm"] button[kind="secondaryFormSubmit"],
             .stForm button[type="submit"],
-            button[kind="primaryFormSubmit"],
+            button[kind="secondaryFormSubmit"],
             .styled-button-container .stButton button,
             .styled-button-container button {
                 width: 100% !important;
@@ -114,9 +114,9 @@ def apply_ui_styles():
 
             /* 버튼 호버(마우스 올렸을 때) 효과 */
             div[data-testid="stForm"] button[type="submit"]:hover,
-            div[data-testid="stForm"] button[kind="primaryFormSubmit"]:hover,
+            div[data-testid="stForm"] button[kind="secondaryFormSubmit"]:hover,
             .stForm button[type="submit"]:hover,
-            button[kind="primaryFormSubmit"]:hover,
+            button[kind="secondaryFormSubmit"]:hover,
             .styled-button-container .stButton button:hover,
             .styled-button-container button:hover {
                 color: white !important;
@@ -130,9 +130,9 @@ def apply_ui_styles():
 
             /* 버튼 포커스(클릭 또는 Tab으로 선택 시) 효과 - 기본 테두리 제거 */
             div[data-testid="stForm"] button[type="submit"]:focus,
-            div[data-testid="stForm"] button[kind="primaryFormSubmit"]:focus,
+            div[data-testid="stForm"] button[kind="secondaryFormSubmit"]:focus,
             .stForm button[type="submit"]:focus,
-            button[kind="primaryFormSubmit"]:focus,
+            button[kind="secondaryFormSubmit"]:focus,
             .styled-button-container .stButton button:focus,
             .styled-button-container button:focus {
                 outline: none !important;
